@@ -42,6 +42,7 @@ SupportMapFragment mapFragment = SupportMapFragment.newInstance();
             mMap.setMyLocationEnabled(true);
         }
     }
+    @SuppressLint("SuspiciousIndentation")
     public void centerOnLocation(LatLng location, boolean isUserLocation) {
         if (mMap == null) return; // Sale si el mapa no está inicializado
 
