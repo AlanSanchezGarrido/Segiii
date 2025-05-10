@@ -30,7 +30,18 @@ public class SpeedRecognizer {
 
     // Iniciar el reconocimiento de voz
     public void startVoiceRecognition() {
-
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        try {
+            if (context instanceof AppCompatActivity) {
+                ((AppCompatActivity) context).startActivityForResult(intent, SPEECH_REQUEST_CODE);
+            } else {
+                listener.onError("El contexto debe ser una AppCompatActivity");
+            }
+        } catch (Exception e) {
+            listener.onError("Reconocimiento de voz no disponible: " + e.getMessage());
+        }
     }
     // Procesar el resultado del reconocimiento
     public void processVoiceResult(int requestCode, int resultCode, @Nullable Intent data) {
