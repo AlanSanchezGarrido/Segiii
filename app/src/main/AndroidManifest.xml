@@ -17,30 +17,26 @@
         android:theme="@style/Theme.Segiii"
         tools:targetApi="31">
         <activity
-            android:name=".UI.SaveDireccions"
-            android:exported="false" />
-        <activity
-            android:name=".UI.RegistrerUser"
-            android:exported="false" />
-        <activity
-            android:name=".RegistroUsuarios"
-            android:exported="false" />
-        <activity
-            android:name=".MapaUI"
+            android:name=".UI.Ayuda"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name=".UI.RegistrerUser"
+            android:exported="false" />
+        <activity
+            android:name=".MapaUI"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAjJUP7zMPVS_grA2tEAPG04DYCdv0reoc" />
+            android:value="" />
     </application>
 
 </manifest>

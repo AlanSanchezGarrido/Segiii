@@ -6,4 +6,5 @@
     <string name="txt_Contraseña">Contraseña</string>
     <string name="txt_confirm_contraseña">Confirma tu contraseña</string>
     <string name="txt_Nombre_Coordenada">Lugar</string>
+    <string name="txt_correo">Correo electrónico</string>
 </resources>
