@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1976D2"
+    tools:context=".UI.login">
+
+    <!-- Guías verticales para márgenes adaptables -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <!-- Guía horizontal para la imagen del robot -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_robot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="194dp" />
+    <!-- Guía horizontal para el CardView -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_card2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.40" />
+
+    <!-- Guía horizontal para el texto inferior -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <!-- Imagen de "Volver" -->
+    <ImageButton
+        android:id="@+id/img_back"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="Volver"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/segiconos"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Imagen de "letras_segi" -->
+    <ImageView
+        android:id="@+id/letras_segi"
+        android:layout_width="151dp"
+        android:layout_height="119dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/tirzo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_back" />
+
+    <!-- Imagen del robot -->
+    <ImageView
+        android:id="@+id/img_robot"
+        android:layout_width="186dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/tirzino"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline_robot" />
+
+    <!-- Tarjeta contenedora -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#60B5E3"
+        app:layout_constraintTop_toTopOf="@id/guideline_card2"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BIENVENIDO"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Correo -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingresa tu correo:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#000000" />
+
+            <EditText
+                android:id="@+id/edit_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_correo_electronico"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Contraseña -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingresa tu contraseña:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_contraseña"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Botón Ingresar -->
+            <Button
+                android:id="@+id/btn_ingresar"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:paddingVertical="2dp"
+                android:text="@string/btn_ingresar"
+                android:textSize="38sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/boton"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Texto inferior: "¿No estás registrado? Regístrate" -->
+    <TextView
+        android:id="@+id/txt_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_registrar"
+        android:textSize="22sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toTopOf="@id/guideline_bottom_text1"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        android:layout_marginTop="8dp" />
+
+    <!-- Texto inferior: "¿Olvidaste tu contraseña?" -->
+    <TextView
+        android:id="@+id/txt_rewrite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_olvidar"
+        android:textSize="22sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/txt_options"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        android:layout_marginTop="8dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

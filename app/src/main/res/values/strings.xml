@@ -7,4 +7,9 @@
     <string name="txt_confirm_contraseña">Confirma tu contraseña</string>
     <string name="txt_Nombre_Coordenada">Lugar</string>
     <string name="txt_correo">Correo electrónico</string>
+    <string name="btn_ingresar">Ingresar</string>
+    <string name="txt_contraseña">Contraseña</string>
+    <string name="txt_correo_electronico">Correo electrónico</string>
+    <string name="txt_registrar">¿No estas registrado? Registrate</string>
+    <string name="txt_olvidar">¿Olvidaste tu contraseña?</string>
 </resources>

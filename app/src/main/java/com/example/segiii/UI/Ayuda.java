@@ -36,7 +36,7 @@ public class Ayuda extends AppCompatActivity {
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(Ayuda.this, MapaUI.class);
             startActivity(intent);
-            finish(); // Cierra esta pantalla (opcional)
+            finish();
         });
 
 
