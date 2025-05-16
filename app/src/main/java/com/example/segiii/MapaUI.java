@@ -1,21 +1,29 @@
 package com.example.segiii;
+import static android.content.ContentValues.TAG;
+
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.example.segiii.UI.RegistrerUser;
+import com.example.segiii.UI.login;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MapaUI extends AppCompatActivity implements OnMapReadyCallback {
+public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback {
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE =1;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private Map mMap;
     private Location locationn;
 
@@ -26,8 +34,10 @@ public class MapaUI extends AppCompatActivity implements OnMapReadyCallback {
 
         setContentView(R.layout.activity_mapa_ui);
 
+
         locationn = new Location(this);
         mMap = new Map(this);
+
         // Obtiene el fragmento del mapa y lo configura para cargar asíncronamente
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.Map);
@@ -52,6 +62,22 @@ public class MapaUI extends AppCompatActivity implements OnMapReadyCallback {
         });
 
 
+    }
+
+    @Override
+    protected void handleVoiceCommand(String command, String result) {
+        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+        if (command.contains("login")) {
+            Intent intent = new Intent(this, login.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        } else if (command.contains("Registrar")) {
+            Intent intent = new Intent(this, RegistrerUser.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
@@ -81,28 +107,28 @@ public class MapaUI extends AppCompatActivity implements OnMapReadyCallback {
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                 LOCATION_PERMISSION_REQUEST_CODE);
     }
+
     public boolean checkLocationPermission() {
         return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
 
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE){
-            if (grantResults.length >0 && grantResults [0]==PackageManager.PERMISSION_GRANTED){
-              mMap.enableMyLocation();
-              locationn.getDeviceLocation(new Location.LocationCallback() {
-                  @Override
-                  public void onLocationReceived(LatLng location) {
-                      mMap.centerOnLocation(location,true);
-                  }
-              });
-            }else{
-                Toast.makeText(this, "Permisso de la ubicacion denegado", Toast.LENGTH_SHORT).show();
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                Toast.makeText(this,
+                        "Permiso de ubicación denegado",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 
 }

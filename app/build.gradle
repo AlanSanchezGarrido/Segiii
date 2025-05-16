@@ -41,6 +41,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
+    implementation 'ai.picovoice:porcupine-android:3.0.0' // Use the latest version
     //Room para la base de datos
     implementation "androidx.room:room-runtime:2.7.1"
     annotationProcessor "androidx.room:room-compiler:2.7.1"
