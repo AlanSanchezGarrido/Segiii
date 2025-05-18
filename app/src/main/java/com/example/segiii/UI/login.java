@@ -8,17 +8,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.segiii.MapaUI;
 import com.example.segiii.R;
-import com.example.segiii.SpeedRecognizer;
-import com.example.segiii.UI.RegistrerUser;
 import com.example.segiii.VoiceNavigationActivity;
-import com.example.segiii.wordSegui;
 
 public class login extends VoiceNavigationActivity {
 
@@ -67,11 +63,6 @@ public class login extends VoiceNavigationActivity {
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
         if (command.contains("mapa")) {
             Intent intent = new Intent(this, MapaUI.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
-        }else if (command.contains("registrar")) {
-            Intent intent = new Intent(this, RegistrerUser.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();

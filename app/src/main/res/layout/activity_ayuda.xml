@@ -84,10 +84,12 @@
         android:id="@+id/robot_image"
         android:layout_width="300dp"
         android:layout_height="300dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/tite"
-        app:layout_constraintTop_toTopOf="@id/oval_background"
         app:layout_constraintBottom_toBottomOf="@id/oval_background"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"/>
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/oval_background"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

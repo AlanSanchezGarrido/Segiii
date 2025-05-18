@@ -6,11 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MapaUI">
+
     <fragment
         android:id="@+id/Map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="676dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_cener_locartion"
@@ -18,11 +19,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="17dp"
-        android:layout_marginBottom="49dp"
+        android:layout_marginBottom="82dp"
         android:src="@drawable/ic_my_location" />
 </RelativeLayout>
 

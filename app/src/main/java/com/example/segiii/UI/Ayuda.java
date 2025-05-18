@@ -7,16 +7,14 @@ import android.widget.ImageButton;
 import android.widget.VideoView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.segiii.MapaUI;
 import com.example.segiii.R;
+import com.example.segiii.VoiceNavigationActivity;
 
-public class Ayuda extends AppCompatActivity {
+public class Ayuda extends VoiceNavigationActivity {
 
+    private boolean isVideoPlaying = false;
     private VideoView videoView;
 
     @Override
@@ -24,12 +22,6 @@ public class Ayuda extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ayuda);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         // Configurar el botón de retroceso
         ImageButton backButton = findViewById(R.id.btn_back);
@@ -39,22 +31,76 @@ public class Ayuda extends AppCompatActivity {
             finish();
         });
 
-
         videoView = findViewById(R.id.video_view);
-        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.videosegi;
-        videoView.setVideoURI(Uri.parse(videoPath));
-        videoView.start();
 
+        // Agregar comandos específicos para la vista de ayuda
+        speedRecognizer.addCustomCommand("reproducir", (context) -> playVideo());
+        speedRecognizer.addCustomCommand("detener", (context) -> stopVideo());
+        speedRecognizer.addCustomCommand("sí", (context) -> playVideo());
+        speedRecognizer.addCustomCommand("no", (context) -> stopVideo());
 
-        videoView.setOnCompletionListener(mp -> videoView.start());
+        // Inicializar el TTS con un callback para hablar cuando esté listo
+        ttsManager = new com.example.segiii.TTSManager(this, initialized -> {
+            if (initialized) {
+                speakWelcomeMessage();
+            }
+        });
     }
 
-
     @Override
-    protected void onPause() {
-        super.onPause();
-        if (videoView.isPlaying()) {
-            videoView.pause();
+    protected void handleVoiceCommand(String command, String result) {
+        // La mayoría de comandos ya están manejados en SpeedRecognizer
+        // Este método solo maneja casos especiales para esta actividad
+
+        if (command.contains("sí") || command.contains("si")) {
+            playVideo();
+        } else if (command.contains("no")) {
+            String message = "De acuerdo no reproduciré el video. ¿En qué más puedo ayudarte?";
+            ttsManager.speak(message, () -> {
+                speedRecognizer.startVoiceRecognition();
+            });
+        } else if (!speedRecognizer.isValidCommand(command) && !command.isEmpty()) {
+            // Si el comando no está registrado y no está vacío
+            handleNoCommand();
+        }
+    }
+
+    private void speakWelcomeMessage() {
+        String message = "Hola Bienvenido, a la ayuda de Segi. " +
+                "¿Quieres que reproduzca un video para mostrarte cómo navegar en nuestra aplicación? " +
+                "Dime sí o no.";
+        ttsManager.speak(message, () -> {
+            speedRecognizer.startVoiceRecognition();
+        });
+    }
+
+    private void playVideo() {
+        if (!isVideoPlaying) {
+            isVideoPlaying = true;
+            Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.videosegi);
+            videoView.setVideoURI(videoUri);
+            videoView.setOnPreparedListener(mp -> {
+                ttsManager.speak("Reproduciendo video tutorial. Puedes decir 'detener' para pararlo o 'pausar' para pausarlo.", null);
+                videoView.start();
+            });
+
+            // Agregar un listener para cuando el video termina
+            videoView.setOnCompletionListener(mp -> {
+                isVideoPlaying = false;
+                ttsManager.speak("El video ha terminado. ¿En qué más puedo ayudarte?", () -> {
+                    speedRecognizer.startVoiceRecognition();
+                });
+            });
+        }
+    }
+
+    private void stopVideo() {
+        if (isVideoPlaying) {
+            isVideoPlaying = false;
+            videoView.stopPlayback();
+            ttsManager.speak("Video detenido. ¿En qué más puedo ayudarte?", () -> {
+                speedRecognizer.startVoiceRecognition();
+            });
         }
     }
 
@@ -62,8 +108,18 @@ public class Ayuda extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!videoView.isPlaying()) {
+        // Reanudar la reproducción del video si estaba reproduciéndose
+        if (isVideoPlaying && !videoView.isPlaying()) {
             videoView.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Pausar el video cuando la actividad pasa a segundo plano
+        if (videoView.isPlaying()) {
+            videoView.pause();
         }
     }
 }
