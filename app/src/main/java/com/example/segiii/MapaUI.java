@@ -19,9 +19,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback {
+public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback, GoogleMap.OnPoiClickListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private Map mMap;
@@ -83,6 +84,7 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap.initializeMap(googleMap);
+        googleMap.setOnPoiClickListener(this);
         // Verifica si se tiene permiso de ubicación
         if (checkLocationPermission()) {
             // Habilita la capa de "Mi ubicación" en el mapa
@@ -131,4 +133,12 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
     }
 
 
+    @Override
+    public void onPoiClick(PointOfInterest pointOfInterest) {
+        //Toast.makeText(this, "kkkkkkkk", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MapaUI.this, NavigationMap.class);
+        intent.putExtra("latitude", pointOfInterest.latLng.latitude);
+        intent.putExtra("longitude", pointOfInterest.latLng.longitude);
+        startActivity(intent);
+    }
 }
