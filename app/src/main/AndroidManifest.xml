@@ -16,24 +16,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Segiii"
         tools:targetApi="31">
-
         <activity
-            android:name=".UI.carga"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <!-- Login -->
+            android:name=".UI.accessibility_menu"
+            android:exported="false" />
+        <!-- Login es la actividad principal -->
         <activity
             android:name=".UI.login"
-            android:exported="false" />
-        <!-- Otras actividades -->
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> <!-- Registro sin intent-filter MAIN/LAUNCHER -->
         <activity
             android:name=".UI.RegistrerUser"
             android:exported="false" />
+        <activity
+            android:name=".UI.carga"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".UI.Ayuda"
             android:exported="false" />

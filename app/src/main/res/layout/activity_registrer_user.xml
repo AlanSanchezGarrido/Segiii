@@ -23,56 +23,56 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
 
-    <!-- Guías horizontales -->
+    <!-- Guía horizontal para el CardView -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="60dp" />
+
+    <!-- Guía horizontal para el botón Guardar (unused but retained) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.70" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_robot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.80" />
 
     <!-- Botón de volver -->
     <ImageButton
         android:id="@+id/img_back"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="71dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
         android:contentDescription="Volver"
-        android:cropToPadding="true"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:src="@drawable/segiconos"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Tarjeta contenedora -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_container"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="12dp"
         app:cardBackgroundColor="#60B5E3"
-        app:layout_constraintTop_toBottomOf="@id/img_back"
-        app:layout_constraintBottom_toTopOf="@id/img_save"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp">
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="@id/guideline_card">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/title"
@@ -81,25 +81,31 @@
                 android:text="Registro"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="32sp"
-                android:textStyle="bold" />
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
 
             <!-- Nombre -->
             <TextView
+                android:id="@+id/nombre_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/user"
-                android:drawablePadding="10dp"
+                android:drawablePadding="8dp"
                 android:text="Nombre"
+                android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/editTextNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_Nombre"
-                android:padding="12dp" />
+                android:padding="8dp"
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -109,20 +115,25 @@
 
             <!-- Apellidos -->
             <TextView
+                android:id="@+id/apellidos_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/apellidouser"
-                android:drawablePadding="10dp"
+                android:drawablePadding="8dp"
                 android:text="Apellidos"
+                android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/editTextApellidos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_Apellidos"
-                android:padding="12dp" />
+                android:padding="8dp"
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -132,12 +143,15 @@
 
             <!-- Correo -->
             <TextView
+                android:id="@+id/email_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/correo"
-                android:drawablePadding="10dp"
+                android:drawablePadding="8dp"
                 android:text="Correo"
+                android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -147,7 +161,8 @@
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_correo"
                 android:inputType="textEmailAddress"
-                android:padding="12dp" />
+                android:padding="8dp"
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -157,21 +172,26 @@
 
             <!-- Contraseña -->
             <TextView
+                android:id="@+id/contrasena_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/clave"
-                android:drawablePadding="10dp"
+                android:drawablePadding="8dp"
                 android:text="Contraseña"
+                android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/editTextContrasena"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_Contraseña"
                 android:inputType="textPassword"
-                android:padding="12dp" />
+                android:padding="8dp"
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -181,70 +201,87 @@
 
             <!-- Confirmar contraseña -->
             <TextView
+                android:id="@+id/confirmar_contrasena_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/llave"
-                android:drawablePadding="10dp"
+                android:drawablePadding="8dp"
                 android:text="@string/txt_confirm_contraseña"
+                android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/editTextConfirmarContrasena"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="Repite la contraseña"
                 android:inputType="textPassword"
-                android:padding="12dp" />
+                android:padding="8dp"
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="2dp"
                 android:background="#000000" />
+
+            <!-- Botón Guardar -->
+            <Button
+                android:id="@+id/img_save"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="@color/boton"
+                android:text="Guardar"
+                android:textColor="@android:color/white"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Botón Guardar -->
-    <Button
-        android:id="@+id/img_save"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/boton"
-        android:text="Guardar"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toTopOf="@id/guideline_button" />
-
-    <!-- Imagen del robot -->
+    <!-- Botón Editar -->
     <ImageView
         android:id="@+id/robot_image"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="239dp"
+        android:layout_height="163dp"
         android:layout_marginTop="4dp"
+        android:contentDescription="Robot"
+        android:scaleType="fitCenter"
         android:src="@drawable/segiregistrer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.093"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline_robot" />
+        app:layout_constraintTop_toBottomOf="@id/card_container" />
 
     <ImageButton
         android:id="@+id/edit_button"
-        android:layout_width="97dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="165dp"
+        android:layout_height="95dp"
+        android:layout_marginStart="8dp"
         android:background="@android:color/transparent"
+        android:contentDescription="Editar imagen"
         android:scaleType="fitCenter"
         android:src="@drawable/image"
+        app:layout_constraintBottom_toBottomOf="@id/robot_image"
         app:layout_constraintStart_toEndOf="@id/robot_image"
-        app:layout_constraintTop_toTopOf="@id/robot_image" />
+        app:layout_constraintTop_toTopOf="@id/robot_image"
+        app:layout_constraintVertical_bias="0.411" />
 
-
+    <!-- Botón de Accesibilidad -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_accessibility"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="640dp"
+        android:contentDescription="Accesibilidad"
+        android:src="@drawable/accessible"
+        app:backgroundTint="#FFFF00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <Button
+        android:id="@+id/btn_high_contrast1"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/boton"
+        android:text="Alto contraste" />
+
+    <Button
+        android:id="@+id/btn_colorblind_red_green2"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/boton"
+        android:text="Daltonismo Rojo-Verde" />
+
+    <Button
+        android:id="@+id/btn_colorblind_blue_yellow3"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/boton"
+        android:text="Daltonismo Azul-Amarillo" />
+
+    <Button
+        android:id="@+id/btn_increase_text_size4"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/boton"
+        android:text="Aumentar tamaño de texto" />
+
+    <Button
+        android:id="@+id/btn_reset_filters5"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/boton"
+        android:text="Restablecer filtros" />
+
+</LinearLayout>

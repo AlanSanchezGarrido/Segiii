@@ -12,4 +12,9 @@
     <string name="txt_correo_electronico">Correo electrónico</string>
     <string name="txt_registrar">¿No estas registrado? Registrate</string>
     <string name="txt_olvidar">¿Olvidaste tu contraseña?</string>
+    <string name="alto_contraste">Alto contraste</string>
+    <string name="daltonismo_rojo_verde">Daltonismo (Rojo-Verde)</string>
+    <string name="daltonismo_azul_amarillo">Daltonismo (Azul-Amarillo)</string>
+    <string name="aumentar_tama_o_de_texto">Aumentar tamaño de texto</string>
+    <string name="restablecer_filtros">Restablecer filtros</string>
 </resources>

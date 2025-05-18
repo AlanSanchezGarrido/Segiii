@@ -14,33 +14,35 @@
         android:id="@+id/btn_back"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_margin="16dp"
         android:background="@drawable/segiconos"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Contenedor título y subtítulo -->
     <LinearLayout
         android:id="@+id/title_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/rounded_background"
-        android:padding="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btn_back"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/rounded_background"
+        android:orientation="vertical"
+        android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="32dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_back">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="Ayuda"
-            android:textStyle="bold"
-            android:textSize="32sp"
             android:textColor="#000000"
-            android:gravity="center"/>
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -50,44 +52,59 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="Comandos comunes"
-            android:textStyle="bold"
-            android:textSize="16sp"
             android:textColor="#000000"
-            android:gravity="center"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <!-- GridLayout para comandos comunes -->
+    <GridLayout
+        android:id="@+id/commands_grid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        android:columnCount="2"
+        android:rowCount="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_container"/>
 
     <!-- VideoView para el video local -->
     <VideoView
         android:id="@+id/video_view"
-        android:layout_width="200dp"
-        android:layout_height="120dp"
+        android:layout_width="334dp"
+        android:layout_height="516dp"
         android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/title_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.584"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/commands_grid" />
 
     <!-- Fondo ovalado translúcido blanco -->
     <View
         android:id="@+id/oval_background"
-        android:layout_width="260dp"
-        android:layout_height="300dp"
+        android:layout_width="80dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:alpha="0.3"
         android:background="@drawable/fondoovalo"
-        app:layout_constraintTop_toBottomOf="@id/video_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintBottom_toBottomOf="@id/video_view"
+        app:layout_constraintStart_toStartOf="@id/video_view" />
 
     <!-- Robot triste -->
     <ImageView
         android:id="@+id/robot_image"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:src="@drawable/tite"
-        app:layout_constraintTop_toTopOf="@id/oval_background"
+        android:layout_width="65dp"
+        android:layout_height="76dp"
+        android:src="@drawable/enamorao"
         app:layout_constraintBottom_toBottomOf="@id/oval_background"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"/>
+        app:layout_constraintEnd_toEndOf="@id/oval_background"
+        app:layout_constraintStart_toStartOf="@id/oval_background"
+        app:layout_constraintTop_toTopOf="@id/oval_background" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

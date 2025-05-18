@@ -23,28 +23,21 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
 
-    <!-- Guía horizontal para la imagen del robot -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_robot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="194dp" />
     <!-- Guía horizontal para el CardView -->
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_card2"
+        android:id="@+id/guideline_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.40" />
+        app:layout_constraintGuide_percent="0.30" />
 
     <!-- Guía horizontal para el texto inferior -->
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom_text1"
+        android:id="@+id/guideline_bottom_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.80" />
 
     <!-- Imagen de "Volver" -->
     <ImageButton
@@ -53,54 +46,54 @@
         android:layout_height="64dp"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:contentDescription="Volver"
-        android:cropToPadding="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:src="@drawable/segiconos"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Imagen de "letras_segi" -->
+    <!-- Imagen del logo SEGI -->
     <ImageView
-        android:id="@+id/letras_segi"
-        android:layout_width="151dp"
-        android:layout_height="119dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/logo_segi"
+        android:layout_width="117dp"
+        android:layout_height="64dp"
+        android:contentDescription="Logo SEGI"
         android:scaleType="fitCenter"
         android:src="@drawable/tirzo"
+        app:layout_constraintBottom_toBottomOf="@id/img_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_back" />
+        app:layout_constraintTop_toTopOf="@id/img_back"
+        app:layout_constraintVertical_bias="1.0" />
 
     <!-- Imagen del robot -->
     <ImageView
         android:id="@+id/img_robot"
-        android:layout_width="186dp"
-        android:layout_height="175dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="164dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="Robot"
         android:scaleType="fitCenter"
         android:src="@drawable/tirzino"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline_robot" />
+        app:layout_constraintTop_toBottomOf="@id/img_back" />
 
     <!-- Tarjeta contenedora -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="#60B5E3"
-        app:layout_constraintTop_toTopOf="@id/guideline_card2"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="#60B5E3"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="@id/guideline_card">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -109,91 +102,115 @@
             android:padding="24dp">
 
             <TextView
+                android:id="@+id/welcome_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BIENVENIDO"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
                 android:layout_gravity="center"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp"
+                android:text="BIENVENIDO"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <!-- Correo -->
             <TextView
+                android:id="@+id/email_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ingresa tu correo:"
-                android:textStyle="bold"
+                android:textColor="#000000"
                 android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:hint="@string/txt_correo_electronico"
                 android:inputType="textEmailAddress"
                 android:padding="12dp"
-                android:layout_marginTop="8dp" />
+                />
+
+
 
             <!-- Contraseña -->
             <TextView
+                android:id="@+id/password_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Ingresa tu contraseña:"
-                android:textStyle="bold"
-                android:textSize="16sp"
                 android:textColor="#000000"
-                android:layout_marginTop="16dp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/edit_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:hint="@string/txt_contraseña"
                 android:inputType="textPassword"
-                android:padding="12dp"
-                android:layout_marginTop="8dp" />
+                android:padding="12dp" />
+
+
 
             <!-- Botón Ingresar -->
             <Button
                 android:id="@+id/btn_ingresar"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/boton"
                 android:paddingVertical="2dp"
                 android:text="@string/btn_ingresar"
-                android:textSize="38sp"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="@color/boton"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp" />
+                android:textSize="30sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Texto inferior: "¿No estás registrado? Regístrate" -->
+
     <TextView
         android:id="@+id/txt_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
         android:text="@string/txt_registrar"
-        android:textSize="22sp"
         android:textColor="#000000"
-        app:layout_constraintTop_toTopOf="@id/guideline_bottom_text1"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintHorizontal_bias="0.652"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="@id/guideline_bottom_text" />
 
-    <!-- Texto inferior: "¿Olvidaste tu contraseña?" -->
     <TextView
         android:id="@+id/txt_rewrite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="@string/txt_olvidar"
-        android:textSize="22sp"
         android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/txt_options"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/txt_options" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_accessibility"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="468dp"
+        android:contentDescription="Accesibilidad"
+        android:src="@drawable/accessible"
+        app:backgroundTint="#FFFF00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
