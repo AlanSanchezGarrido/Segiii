@@ -1,4 +1,4 @@
-package com.example.segiii;
+package com.example.segiii.vozSegi.ComandoPrincipal;
 
 // Importaciones necesarias para manejar permisos, contexto, logs y la biblioteca de detección de palabras clave (Porcupine)
 import android.Manifest;
@@ -96,6 +96,7 @@ public class wordSegui {
     // Método para detener la escucha de la palabra clave
     public void stopListening() {
         // Verifica si no está escuchando o si el administrador es nulo
+        Log.d(TAG, "stopListening: Intentando detener Porcupine.");
         if (!isListening || porcupineManager == null) {
             Log.d(TAG, "No se está escuchando o PorcupineManager es null, ignorando stop");
             return;
@@ -103,9 +104,11 @@ public class wordSegui {
 
         try {
             // Detiene y libera los recursos de Porcupine
-            Log.d(TAG, "Deteniendo PorcupineManager...");
+            Log.d(TAG, "stopListening: Deteniendo PorcupineManager...");
             porcupineManager.stop(); // Detiene la escucha
+            Log.d(TAG, "stopListening: porcupineManager.stop() llamado."); // Log agregado
             porcupineManager.delete(); // Libera el administrador
+            Log.d(TAG, "stopListening: porcupineManager.delete() llamado."); // Log agregado
             porcupineManager = null; // Establece el administrador a nulo
             isListening = false; // Actualiza la bandera de estado
             Toast.makeText(context, "Escucha detenida", Toast.LENGTH_SHORT).show();
@@ -149,7 +152,8 @@ public class wordSegui {
 
     // Libera los recursos de Porcupine
     public void cleanup() {
-        Log.d(TAG, "Limpiando recursos de Porcupine...");
+        Log.d(TAG, "cleanup: Iniciando limpieza de Porcupine...");
         stopListening(); // Detiene la escucha y libera recursos
+        Log.d(TAG, "cleanup: Limpieza de Porcupine completada."); // Log agregado
     }
 }

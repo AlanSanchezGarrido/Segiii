@@ -1,4 +1,4 @@
-package com.example.segiii;
+package com.example.segiii.vozSegi.ComandoPrincipal;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;

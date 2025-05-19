@@ -96,6 +96,7 @@
 
             <EditText
                 android:layout_width="match_parent"
+                android:id="@+id/et_nombre"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_Nombre"
@@ -120,6 +121,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/et_apellido"
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_Apellidos"
                 android:padding="12dp" />
@@ -141,7 +143,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -168,6 +170,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/et_password"
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_Contraseña"
                 android:inputType="textPassword"
@@ -192,6 +195,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/et_confirpassword"
                 android:background="@android:color/transparent"
                 android:hint="Repite la contraseña"
                 android:inputType="textPassword"

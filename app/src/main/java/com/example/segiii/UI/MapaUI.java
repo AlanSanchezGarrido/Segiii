@@ -1,19 +1,18 @@
-package com.example.segiii;
-import static android.content.ContentValues.TAG;
+package com.example.segiii.UI;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.segiii.UI.RegistrerUser;
-import com.example.segiii.UI.login;
+import com.example.segiii.Location;
+import com.example.segiii.Map;
+import com.example.segiii.R;
+import com.example.segiii.vozSegi.ComandoPrincipal.VoiceNavigationActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -71,7 +70,7 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
-        } else if (command.contains("Registrar")) {
+        } else if (command.contains("Registrame")) {
             Intent intent = new Intent(this, RegistrerUser.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);

@@ -12,7 +12,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.segiii.MapaUI;
 import com.example.segiii.R;
 
 public class Carga extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.example.segiii;
+package com.example.segiii.vozSegi.ComandoPrincipal;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
     protected wordSegui wordSegui;
     protected SpeedRecognizer speedRecognizer;
     protected TTSManager ttsManager;
-    protected static final String PICOVOICE_ACCESS_KEY = " tu clave a qui";
+    protected static final String PICOVOICE_ACCESS_KEY = "Rx7/DDQUCD6AO6IjcQH+gly616NX9IaT0InMyKpVu0Rgsu4zgGo/jg==";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

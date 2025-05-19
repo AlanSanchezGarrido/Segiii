@@ -26,6 +26,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        pickFirst 'META-INF/INDEX.LIST' // Ignora duplicados y usa el primer archivo encontrado
+        pickFirst 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -40,6 +44,15 @@ dependencies {
     // Google Maps y Location
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
+
+    implementation 'com.google.cloud:google-cloud-dialogflow:2.1.0'
+    implementation 'io.grpc:grpc-okhttp:1.39.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'commons-io:commons-io:2.11.0'
+
+
 
     implementation 'ai.picovoice:porcupine-android:3.0.0' // Use the latest version
     //Room para la base de datos

@@ -8,9 +8,9 @@ import android.widget.VideoView;
 
 import androidx.activity.EdgeToEdge;
 
-import com.example.segiii.MapaUI;
 import com.example.segiii.R;
-import com.example.segiii.VoiceNavigationActivity;
+import com.example.segiii.vozSegi.ComandoPrincipal.VoiceNavigationActivity;
+import com.example.segiii.vozSegi.ComandoPrincipal.TTSManager;
 
 public class Ayuda extends VoiceNavigationActivity {
 
@@ -40,7 +40,7 @@ public class Ayuda extends VoiceNavigationActivity {
         speedRecognizer.addCustomCommand("no", (context) -> stopVideo());
 
         // Inicializar el TTS con un callback para hablar cuando esté listo
-        ttsManager = new com.example.segiii.TTSManager(this, initialized -> {
+        ttsManager = new TTSManager(this, initialized -> {
             if (initialized) {
                 speakWelcomeMessage();
             }

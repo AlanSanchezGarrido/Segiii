@@ -1,10 +1,9 @@
-package com.example.segiii;
+package com.example.segiii.vozSegi.ComandoPrincipal;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.segiii.UI.Ayuda;
 import com.example.segiii.UI.RegistrerUser;
-import com.example.segiii.UI.login;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,15 +54,15 @@ public class SpeedRecognizer {
     private void initializeCommands() {
         commandMap = new HashMap<>();
 
-//        // Comando para registrar usuarios
-//        commandMap.put("registrar", (context) -> {
-//            Intent intent = new Intent(context, RegistrerUser.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            context.startActivity(intent);
-//            if (context instanceof AppCompatActivity) {
-//                ((AppCompatActivity) context).finish();
-//            }
-//        });
+       // Comando para registrar usuarios
+       commandMap.put("registrame", (context) -> {
+            Intent intent = new Intent(context, RegistrerUser.class);
+           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+          context.startActivity(intent);
+            if (context instanceof AppCompatActivity) {
+                ((AppCompatActivity) context).finish();
+            }
+        });
 //
 //        // Comando para ir al login
 //        commandMap.put("login", (context) -> {

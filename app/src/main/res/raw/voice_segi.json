@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "segivoiceassistant",
+  "private_key_id": "a33d30380319c6822d1e579514b1deb0d8cc4dca",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCLzjQh1TkTxUxf\numCjUApR/Ft1FZRUmHwkSgeeCgqOUrqO4WFk6svrjiXRS4S25I7Fl7wOixfvKHN1\nP7sphdJxqpOA9+VlunFHFk5pbdM+THNQjzdYsM7o1yotAJbGa2ZEOoDweI3wZCbu\nbGVAYZhN5oVBaTvdEFNwundQs+Pmjgn+9l8HqHLBfurGeeYsg3eiIgF/p5fCkBZQ\nlKV4d7/OrWGLQfUWsVvwHq8dJRvPLGX2TGdo7alj3L3Oc4rPl0KC2AdkNkWPyLtj\n9lKDcPP0F9/KBVrRmEhNHza+7R12O9WEeEzR5V2amToJFzupfIwxHWcQNZXEuvFq\nojGzWj5lAgMBAAECggEAEo64Sk5mkWqE0QcpGTyAZjIYhMHsys7j2aBPAwojrREr\nrNgbaL0m/NlFSVMcJnfPwMg7oPWTI36L1uIzCpe2H7rr8fhV5as6Kpy6I1H98pzM\nyMJ97wKnMG6RLWCQ4v0yGbfnUiQ6eRCeP1M5nHJn+F0zToO0u8sVPFcwC9EZHQsG\n7LWrtTdQ0NMsZ2r2udam2nrX/XVC5+jj1PzROzFeRfah8tuqsCJVjIQ88w3u1gzJ\naBq80w5c4X2aUmihPlxAVUCRMGvNatBBsjZuWfx165H5ZBGjpiCXkhXDCgy0gqT+\nNac3V+r3Iv41FOP+K24k14Cy160OJ8gBpMPQaSAKKQKBgQC9fhFWGFYQQ0rapTou\nsP8Zyd/rWb860JPhLqhqZ0xdhUDCrD86Krj8+d7cGhSl6ECjVDA3SyY5APbnbF//\nSQvxjG4XcWGaNuIqjm4g4yTGCINiJncPfzOyVVHUtFeZrTdQmLM5XuHSwoCozSMo\nyFXEjLBin2DFZjKeX1l3QFzH2QKBgQC838CgtG+gsSDn9y+KuoStYmETLKHDKkWb\nr0ominXu1sxfu+hASYNj1EncMxYsOt/5yMCAE+pMUck3j5DaAKPxEITsoYO5uglq\nVgg/RLWBGrvfq0ed7N3/yuZ9FW2pD1t/WPMBa7irRHfw0ftL59Ck2rJpp3HrWh71\n1LB6cgj/bQKBgQCtlArLY9WKZinuaUYHuUik1eCRFQ/wD1o2/ud1OJSiYkr1SJVO\ncg4sZbM4yYc6hqqXMqpMLEGiG/kP+p1hGweex3WdcdXnTvkT5I6K/6cS5H99bCDK\nCEpRxIgGIQDRm/M8l/QszHZt+o+ikO7xD7pJJlr4rGgXysr5efxZGZMj2QKBgEZy\nPmqyYiBRcLCUZcscnnf9BbAdKYidr7DNxJ5zbmFTBI+AirPPt434lEPpWg/NNdT4\np7QduXoV1zM9/Q0SyBMV0j5gT71qQjDDPfg7LGenDQPz4pZozrSlfSqSX4B7Fel9\nx8Vz5EEdHI9aApzhLdUPLRRzO+5Igtu2JMzG08xRAoGBALb55uo6VKex3QvBCjNQ\nYHqjii4FDrHt3L4+rQI1ItvmRo1uh4OWSoXpJ6VgZaR1El1t9wuCi0r9LT6Wno3i\nOv0BaAypmALmLqiBHeW8Vb9BtlomSZ5Fg9jDGa02354Ocmb3C9BxtDOJzBPfR6TU\nSrmix/iwEg+F3NW1hEHxE8QY\n-----END PRIVATE KEY-----\n",
+  "client_email": "segidialogflow@segivoiceassistant.iam.gserviceaccount.com",
+  "client_id": "108950536296770144324",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/segidialogflow%40segivoiceassistant.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
