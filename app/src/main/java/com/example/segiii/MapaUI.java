@@ -13,8 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.segiii.UI.RegistrerUser;
 import com.example.segiii.UI.login;
+import com.example.segiii.navigation.Geocode;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -132,13 +135,18 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         }
     }
 
-
     @Override
     public void onPoiClick(PointOfInterest pointOfInterest) {
-        //Toast.makeText(this, "kkkkkkkk", Toast.LENGTH_SHORT).show();
+        /*
+        Toast.makeText(this, "kkkkkkkk", Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent(MapaUI.this, NavigationMap.class);
         intent.putExtra("latitude", pointOfInterest.latLng.latitude);
         intent.putExtra("longitude", pointOfInterest.latLng.longitude);
         startActivity(intent);
+         */
+        Toast.makeText(this, pointOfInterest.placeId, Toast.LENGTH_SHORT).show();
+        Geocode.navigateTo("Barbacoa Santadora",MapaUI.this);
+
     }
 }
