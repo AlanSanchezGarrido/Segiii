@@ -23,16 +23,12 @@
                 tools:ignore="Instantiatable" />
             <activity
                 android:name=".UI.Carga"
-                android:exported="true">
-                <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
+                android:exported="true"/>
 
-                    <category android:name="android.intent.category.LAUNCHER" />
-                </intent-filter>
-            </activity>
         <activity
             android:name=".UI.login"
             android:exported="true" />
+
         <activity
             android:name=".UI.RegistrerUser"
             android:exported="false" />
@@ -41,14 +37,20 @@
             android:exported="true" />
         <activity
             android:name=".UI.MapaUI"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="tu clave" />
+            android:value="clave_google" />
     </application>
 
 

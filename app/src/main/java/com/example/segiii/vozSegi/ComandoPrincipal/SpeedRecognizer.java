@@ -3,6 +3,7 @@ package com.example.segiii.vozSegi.ComandoPrincipal;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 
@@ -10,7 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.segiii.UI.Ayuda;
+import com.example.segiii.UI.MapaUI;
 import com.example.segiii.UI.RegistrerUser;
+import com.example.segiii.UI.login;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,11 +33,15 @@ public class SpeedRecognizer {
     private Map<String, CommandAction> commandMap;
     private TTSManager ttsManager;
     private boolean isFirstError = true;
+    private boolean isRecognizing = false;
+    private boolean isDataEntryMode = false; // Nuevo flag para indicar modo de entrada de datos
 
     // Interfaz para notificar comandos procesados
     public interface OnVoiceCommandListener {
         void onCommandProcessed(String command, String result);
         void onError(String errorMessage);
+        // Nuevo método para notificar cuando el reconocimiento se cancela manualmente
+        void onRecognitionCancelled();
     }
 
     // Interfaz funcional para acciones de comando
@@ -45,47 +52,83 @@ public class SpeedRecognizer {
     public SpeedRecognizer(Context context, OnVoiceCommandListener listener) {
         this.context = context;
         this.listener = listener;
-        this.timeoutHandler = new Handler();
+        this.timeoutHandler = new Handler(Looper.getMainLooper());
         this.ttsManager = new TTSManager(context, null);
         initializeCommands();
+    }
+
+    /**
+     * Constructor sobrecargado que permite establecer el modo de entrada de datos
+     */
+    public SpeedRecognizer(Context context, OnVoiceCommandListener listener, boolean isDataEntryMode) {
+        this(context, listener);
+        this.isDataEntryMode = isDataEntryMode;
     }
 
     // Inicializar todos los comandos disponibles en la aplicación
     private void initializeCommands() {
         commandMap = new HashMap<>();
 
-       // Comando para registrar usuarios
-       commandMap.put("registrame", (context) -> {
+        // Comando para cancelar el reconocimiento de voz
+        commandMap.put("cancelar", (context) -> {
+            cancelRecognition();
+        });
+
+        // Alias para cancelar
+        commandMap.put("silenciar", commandMap.get("cancelar"));
+        commandMap.put("detener", commandMap.get("cancelar"));
+        commandMap.put("parar", commandMap.get("cancelar"));
+        commandMap.put("apagar", commandMap.get("cancelar"));
+        commandMap.put("quieto", commandMap.get("cancelar"));
+        commandMap.put("stop", commandMap.get("cancelar"));
+
+        // Comando para registrar usuarios
+        commandMap.put("registrar", (context) -> {
             Intent intent = new Intent(context, RegistrerUser.class);
-           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-          context.startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            context.startActivity(intent);
             if (context instanceof AppCompatActivity) {
                 ((AppCompatActivity) context).finish();
             }
         });
-//
-//        // Comando para ir al login
-//        commandMap.put("login", (context) -> {
-//            Intent intent = new Intent(context, login.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            context.startActivity(intent);
-//            if (context instanceof AppCompatActivity) {
-//                ((AppCompatActivity) context).finish();
-//            }
-//        });
-//
-//        // Comando para ir al mapa
-//        commandMap.put("mapa", (context) -> {
-//            Intent intent = new Intent(context, MapaUI.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            context.startActivity(intent);
-//            if (context instanceof AppCompatActivity) {
-//                ((AppCompatActivity) context).finish();
-//            }
-//        });
+
+        // Alias para registrar
+        commandMap.put("registrame", commandMap.get("registrar"));
+        commandMap.put("registro", commandMap.get("registrar"));
+        commandMap.put("registrarme", commandMap.get("registrar"));
+
+        // Comando para ir al login
+        commandMap.put("login", (context) -> {
+            Intent intent = new Intent(context, login.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            context.startActivity(intent);
+            if (context instanceof AppCompatActivity) {
+                ((AppCompatActivity) context).finish();
+            }
+        });
+
+        // Alias para login
+        commandMap.put("iniciar sesión", commandMap.get("login"));
+        commandMap.put("iniciar sesion", commandMap.get("login"));
+        commandMap.put("ingresar", commandMap.get("login"));
+
+        // Comando para ir al mapa
+        commandMap.put("mapa", (context) -> {
+            Intent intent = new Intent(context, MapaUI.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            context.startActivity(intent);
+            if (context instanceof AppCompatActivity) {
+                ((AppCompatActivity) context).finish();
+            }
+        });
+
+        // Alias para mapa
+        commandMap.put("ver mapa", commandMap.get("mapa"));
+        commandMap.put("ir al mapa", commandMap.get("mapa"));
+        commandMap.put("mostrar mapa", commandMap.get("mapa"));
 
         // Comando para ir a la ayuda/tutorial
-        commandMap.put("tutorial", (context) -> {
+        commandMap.put("ayuda", (context) -> {
             Intent intent = new Intent(context, Ayuda.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             context.startActivity(intent);
@@ -94,8 +137,16 @@ public class SpeedRecognizer {
             }
         });
 
-        // También puedes agregar alias para los comandos
-        commandMap.put("ayuda", commandMap.get("tutorial"));
+        // Alias para ayuda
+        commandMap.put("tutorial", commandMap.get("ayuda"));
+        commandMap.put("instrucciones", commandMap.get("ayuda"));
+
+        // Comando para salir
+        commandMap.put("salir", (context) -> {
+            if (context instanceof AppCompatActivity) {
+                ((AppCompatActivity) context).finishAffinity();
+            }
+        });
     }
 
     // Método para agregar comandos personalizados para casos específicos
@@ -103,8 +154,19 @@ public class SpeedRecognizer {
         commandMap.put(keyword.toLowerCase(), action);
     }
 
+    // Cambiar el modo de entrada de datos
+    public void setDataEntryMode(boolean dataEntryMode) {
+        this.isDataEntryMode = dataEntryMode;
+    }
+
     // Iniciar el reconocimiento de voz
     public void startVoiceRecognition() {
+        if (isRecognizing) {
+            Log.d(TAG, "Ya hay un reconocimiento de voz en curso, ignorando solicitud");
+            return;
+        }
+
+        isRecognizing = true;
         cancelTimeout();
 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -120,10 +182,32 @@ public class SpeedRecognizer {
                 ((AppCompatActivity) context).startActivityForResult(intent, SPEECH_REQUEST_CODE);
                 startTimeout();
             } else {
+                isRecognizing = false;
                 listener.onError("El contexto debe ser una AppCompatActivity");
             }
         } catch (Exception e) {
+            isRecognizing = false;
             listener.onError("Reconocimiento de voz no disponible: " + e.getMessage());
+        }
+    }
+
+    // Nuevo método para cancelar explícitamente el reconocimiento de voz
+    public void cancelRecognition() {
+        if (isRecognizing) {
+            Log.d(TAG, "Cancelando reconocimiento de voz manualmente");
+            cancelTimeout();
+
+            // Detener la actividad de reconocimiento
+            if (context instanceof AppCompatActivity) {
+                AppCompatActivity activity = (AppCompatActivity) context;
+                activity.finishActivity(SPEECH_REQUEST_CODE);
+            }
+
+            isRecognizing = false;
+            ttsManager.speak("Reconocimiento de voz desactivado. Di 'Okey Segui' para volver a activar.", null);
+
+            // Notificar que el reconocimiento fue cancelado
+            listener.onRecognitionCancelled();
         }
     }
 
@@ -134,10 +218,12 @@ public class SpeedRecognizer {
                 Log.d(TAG, "Tiempo de espera agotado, reiniciando reconocimiento");
                 isFirstError = false;
                 ttsManager.speak("No he escuchado nada. Por favor, intenta hablar ahora.", () -> {
+                    isRecognizing = false;
                     startVoiceRecognition();
                 });
             } else {
                 isFirstError = true;
+                isRecognizing = false;
                 listener.onError("No se detectó ningún comando en el tiempo establecido");
             }
         };
@@ -160,7 +246,14 @@ public class SpeedRecognizer {
             if (results != null && !results.isEmpty()) {
                 String spokenText = results.get(0).toLowerCase();
                 Log.d(TAG, "Texto Reconocido: " + spokenText);
-                executeCommand(spokenText);
+
+                // Si estamos en modo de entrada de datos, pasamos el texto directamente
+                // sin verificar si es un comando
+                if (isDataEntryMode) {
+                    listener.onCommandProcessed(spokenText, "datos reconocidos");
+                } else {
+                    executeCommand(spokenText);
+                }
             } else {
                 handleNoCommand("No se reconoció ningún comando");
             }
@@ -170,14 +263,23 @@ public class SpeedRecognizer {
         } else {
             handleNoCommand("Error en el reconocimiento de voz");
         }
+
+        // Restablecer el estado de reconocimiento
+        isRecognizing = false;
     }
 
     // Manejar cuando no se recibe un comando válido
     private void handleNoCommand(String errorMessage) {
-        ttsManager.speak("Disculpe, no reconozco ese comando. Por favor intente de nuevo diciendo un comando válido como 'mapa', 'login', 'registrar' o 'ayuda'.", () -> {
-            startVoiceRecognition();
-        });
-        listener.onError(errorMessage);
+        // Si estamos en modo de entrada de datos, no mostramos el mensaje de comando no reconocido
+        if (isDataEntryMode) {
+            listener.onError(errorMessage);
+        } else {
+            ttsManager.speak("Disculpe, no reconozco ese comando. Por favor intente de nuevo diciendo un comando válido como 'mapa', 'login', 'registrar', 'ayuda' o 'cancelar'.", () -> {
+                isRecognizing = false;
+                startVoiceRecognition();
+            });
+            listener.onError(errorMessage);
+        }
     }
 
     // Procesar comandos y ejecutar acciones automatizadas
@@ -185,25 +287,58 @@ public class SpeedRecognizer {
         String resultado = "comando no reconocido";
         boolean commandFound = false;
 
-        // Buscar si el texto contiene alguna palabra clave de comando
-        for (Map.Entry<String, CommandAction> entry : commandMap.entrySet()) {
-            if (commandText.contains(entry.getKey())) {
-                resultado = "ejecutando: " + entry.getKey();
-                CommandAction action = entry.getValue();
-                if (action != null) {
+        // Convertir el texto a minúsculas para hacer la comparación insensible a mayúsculas
+        String lowerCommandText = commandText.toLowerCase();
+
+        // Buscar coincidencias exactas primero
+        if (commandMap.containsKey(lowerCommandText)) {
+            CommandAction action = commandMap.get(lowerCommandText);
+            if (action != null) {
+                resultado = "ejecutando: " + lowerCommandText;
+                // Notificar que se procesó el comando antes de ejecutar la acción
+                listener.onCommandProcessed(commandText, resultado);
+                // Ejecutar la acción con un pequeño retraso para evitar problemas de navegación
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     action.execute(context);
-                    commandFound = true;
-                    break;
+                }, 100);
+                commandFound = true;
+            }
+        }
+
+        // Si no se encontró coincidencia exacta, buscar si el texto contiene alguna palabra clave
+        if (!commandFound) {
+            for (Map.Entry<String, CommandAction> entry : commandMap.entrySet()) {
+                String key = entry.getKey();
+                // Usar palabras completas para evitar falsos positivos
+                if (lowerCommandText.contains(" " + key + " ") ||
+                        lowerCommandText.startsWith(key + " ") ||
+                        lowerCommandText.endsWith(" " + key) ||
+                        lowerCommandText.equals(key)) {
+
+                    CommandAction action = entry.getValue();
+                    if (action != null) {
+                        resultado = "ejecutando: " + key;
+                        // Notificar que se procesó el comando antes de ejecutar la acción
+                        listener.onCommandProcessed(commandText, resultado);
+                        // Ejecutar la acción con un pequeño retraso para evitar problemas de navegación
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            action.execute(context);
+                        }, 100);
+                        commandFound = true;
+                        break;
+                    }
                 }
             }
         }
 
         if (!commandFound) {
             // Si el comando no se encontró en el mapa, notificar al usuario
-            handleNoCommand("Comando no reconocido: " + commandText);
-        } else {
-            // Notificar que se procesó el comando
-            listener.onCommandProcessed(commandText, resultado);
+            if (isDataEntryMode) {
+                // En modo de entrada de datos, simplemente pasamos el texto como está
+                listener.onCommandProcessed(commandText, "datos reconocidos");
+            } else {
+                handleNoCommand("Comando no reconocido: " + commandText);
+            }
         }
     }
 
@@ -213,12 +348,23 @@ public class SpeedRecognizer {
             return false;
         }
 
-        commandText = commandText.toLowerCase();
+        String lowerCommandText = commandText.toLowerCase();
+
+        // Verificar coincidencias exactas
+        if (commandMap.containsKey(lowerCommandText)) {
+            return true;
+        }
+
+        // Verificar coincidencias parciales
         for (String key : commandMap.keySet()) {
-            if (commandText.contains(key)) {
+            if (lowerCommandText.contains(" " + key + " ") ||
+                    lowerCommandText.startsWith(key + " ") ||
+                    lowerCommandText.endsWith(" " + key) ||
+                    lowerCommandText.equals(key)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -240,6 +386,7 @@ public class SpeedRecognizer {
             }
         } else {
             ttsManager.speak("No entendí tu respuesta. Por favor di sí o no.", () -> {
+                isRecognizing = false;
                 startVoiceRecognition();
             });
         }
@@ -247,5 +394,9 @@ public class SpeedRecognizer {
 
     public static int getSpeechRequestCode() {
         return SPEECH_REQUEST_CODE;
+    }
+
+    public boolean isRecognizing() {
+        return isRecognizing;
     }
 }

@@ -86,6 +86,7 @@
 
             <!-- Nombre -->
             <TextView
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -95,6 +96,7 @@
                 android:textStyle="bold" />
 
             <EditText
+
                 android:layout_width="match_parent"
                 android:id="@+id/et_nombre"
                 android:layout_height="wrap_content"

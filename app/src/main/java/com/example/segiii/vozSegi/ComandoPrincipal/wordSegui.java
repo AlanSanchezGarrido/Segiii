@@ -43,7 +43,6 @@ public class wordSegui {
         // Verifica si ya está escuchando
         if (isListening) {
             Log.d(TAG, "Ya está escuchando, ignorando solicitud");
-            Toast.makeText(context, "Ya está escuchando", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -61,15 +60,16 @@ public class wordSegui {
             porcupineManager = new PorcupineManager.Builder()
                     .setAccessKey(accessKey) // Establece la clave de acceso de Picovoice
                     .setKeywordPath("okey-segui_es_android_v3_0_0.ppn") // Archivo de la palabra clave en español
-                    .setModelPath("porcupine_params_es.pv") // Modelo de lenguaje en español (comentar si no se usa)
+                    .setModelPath("porcupine_params_es.pv") // Modelo de lenguaje en español
                     .setSensitivity(0.7f) // Sensibilidad para la detección (0.0 a 1.0)
                     .build(context, new PorcupineManagerCallback() {
                         // Callback que se ejecuta cuando se detecta la palabra clave
                         @Override
                         public void invoke(int keywordIndex) {
                             Log.d(TAG, "Hotword 'Okey Segui' detectado, índice: " + keywordIndex);
-                            Toast.makeText(context, "¡Hotword 'Okey Segui' detectado!", Toast.LENGTH_SHORT).show();
-                            listener.onDetected(); // Notifica al listener que se detectó la palabra
+                            if (listener != null) {
+                                listener.onDetected(); // Notifica al listener que se detectó la palabra
+                            }
                         }
                     });
 
@@ -106,16 +106,12 @@ public class wordSegui {
             // Detiene y libera los recursos de Porcupine
             Log.d(TAG, "stopListening: Deteniendo PorcupineManager...");
             porcupineManager.stop(); // Detiene la escucha
-            Log.d(TAG, "stopListening: porcupineManager.stop() llamado."); // Log agregado
             porcupineManager.delete(); // Libera el administrador
-            Log.d(TAG, "stopListening: porcupineManager.delete() llamado."); // Log agregado
             porcupineManager = null; // Establece el administrador a nulo
             isListening = false; // Actualiza la bandera de estado
-            Toast.makeText(context, "Escucha detenida", Toast.LENGTH_SHORT).show();
         } catch (PorcupineException e) {
             // Maneja errores al detener Porcupine
             Log.e(TAG, "Error al detener Porcupine: " + e.getMessage(), e);
-            Toast.makeText(context, "Error al detener hotword: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -141,7 +137,6 @@ public class wordSegui {
         } else {
             // Registra un error si el contexto no es una actividad
             Log.e(TAG, "Contexto no es Activity, no se pueden solicitar permisos");
-            Toast.makeText(context, "No se pueden solicitar permisos", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -154,6 +149,5 @@ public class wordSegui {
     public void cleanup() {
         Log.d(TAG, "cleanup: Iniciando limpieza de Porcupine...");
         stopListening(); // Detiene la escucha y libera recursos
-        Log.d(TAG, "cleanup: Limpieza de Porcupine completada."); // Log agregado
     }
 }

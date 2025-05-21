@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,280 +27,375 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.segiii.BDSegi.Database.SegiDataBase;
 import com.example.segiii.R;
+import com.example.segiii.vozSegi.ComandoPrincipal.SpeedRecognizer;
 import com.example.segiii.vozSegi.ComandoPrincipal.VoiceNavigationActivity;
-import com.example.segiii.vozSegi.flujoVoz.DialogFlowManager;
-import com.example.segiii.vozSegi.flujoVoz.SpeechManager;
-import com.google.protobuf.Value;
 
+import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
 
-public class login extends VoiceNavigationActivity implements SpeechManager.OnSpeechResultListener,SpeechManager.OnSpeechManagerReadyListener {
-    private SpeechManager speechManager;
-    private DialogFlowManager dialogFlowManager;
-    private TextToSpeech textToSpeech;
+public class login extends VoiceNavigationActivity {
+    private static final String TAG = "LoginActivity";
+    private static final int SPEECH_REQUEST_CODE = 100;
+
     private EditText etCorreo, etPassword;
     private SegiDataBase segiDataBase;
+    private TextToSpeech textToSpeech;
 
-   @Override
+    // Estado actual del flujo de conversación
+    private enum ConversationState {
+        ASKING_ACCOUNT,
+        ASKING_EMAIL,
+        ASKING_PASSWORD,
+        CONFIRMING_LOGIN
+    }
+
+    private ConversationState currentState = ConversationState.ASKING_ACCOUNT;
+    private boolean isListening = false;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
-       EdgeToEdge.enable(this);
-       setContentView(R.layout.activity_login);
-       segiDataBase = SegiDataBase.getDatabase(this);
-       etCorreo=findViewById(R.id.edit_email);
-       etPassword=findViewById(R.id.edit_password);
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_login);
 
-       ImageButton imgBack = findViewById(R.id.img_back);
-       imgBack.setOnClickListener(v -> {
-           Intent intent = new Intent(login.this, MapaUI.class);
-           startActivity(intent);
-       });
+        // Inicializar base de datos
+        segiDataBase = SegiDataBase.getDatabase(this);
 
-       TextView txtOptions = findViewById(R.id.txt_options);
-       txtOptions.setOnClickListener(v -> {
-           Intent intent = new Intent(login.this, RegistrerUser.class);
-           startActivity(intent);
-       });
+        // Inicializar campos
+        etCorreo = findViewById(R.id.edit_email);
+        etPassword = findViewById(R.id.edit_password);
 
+        // Botón para regresar
+        ImageButton imgBack = findViewById(R.id.img_back);
+        imgBack.setOnClickListener(v -> {
+            Intent intent = new Intent(login.this, MapaUI.class);
+            startActivity(intent);
+        });
 
-       TextView txtRewrite = findViewById(R.id.txt_rewrite);
-       txtRewrite.setOnClickListener(v -> {
-           Intent intent = new Intent(login.this, RegistrerUser.class);
-           startActivity(intent);
-       });
+        // Texto para ir a registro
+        TextView txtOptions = findViewById(R.id.txt_options);
+        txtOptions.setOnClickListener(v -> {
+            Intent intent = new Intent(login.this, RegistrerUser.class);
+            startActivity(intent);
+        });
 
+        // Texto para reescribir
+        TextView txtRewrite = findViewById(R.id.txt_rewrite);
+        txtRewrite.setOnClickListener(v -> {
+            Intent intent = new Intent(login.this, RegistrerUser.class);
+            startActivity(intent);
+        });
 
-       Button btnIngresar = findViewById(R.id.btn_ingresar);
-       btnIngresar.setOnClickListener(v -> {
-           Intent intent = new Intent(login.this, MapaUI.class);
-           startActivity(intent);
-       });
+        // Botón para ingresar
+        Button btnIngresar = findViewById(R.id.btn_ingresar);
+        btnIngresar.setOnClickListener(v -> {
+            // Aquí deberías implementar la lógica de autenticación real
+            Intent intent = new Intent(login.this, MapaUI.class);
+            startActivity(intent);
+        });
 
+        // Configuración de Edge-to-Edge
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_layout), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
-       ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_layout), (v, insets) -> {
-           Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-           v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-           return insets;
-       });
-
-       View rootView = findViewById(android.R.id.content);
-       if (rootView != null) {
-           ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-               Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-               v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-               return insets;
-           });
-       } else {
-           //Log.e("RegistrerUser", "Root view is null, Edge-to-Edge configuration skipped");
-       }
-
-       speechManager = new SpeechManager(this,this);
-       dialogFlowManager= new DialogFlowManager(this);
-       speechManager.setOnSpeechResultListener(this);
-       textToSpeech = new TextToSpeech(this, status -> {
-           if (status==TextToSpeech.SUCCESS){
-               textToSpeech.setLanguage(new Locale("es","ES"));
-               textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                   @Override
-                   public void onStart(String utteranceId) {
-
-                   }
-
-                   @Override
-                   public void onDone(String utteranceId) {
-                       runOnUiThread(()->{
-                           if (utteranceId.equals("ask_name")){
-                               if(ContextCompat.checkSelfPermission(login.this, Manifest.permission.RECORD_AUDIO)== PackageManager.PERMISSION_GRANTED){
-                                   speechManager.startVoiceRecognition();
-
-                               }
-                           }
-                       });
-
-                   }
-
-                   @Override
-                   public void onError(String utteranceId) {
-                       runOnUiThread(()->{
-                           if(ContextCompat.checkSelfPermission(login.this, Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED){
-                               speechManager.startVoiceRecognition();
-
-                           }
-                       });
-
-                   }
-               });
-               //speak("¿Cual es tu Nombre?", "ask_name");
-           }
-
-       });
-       dialogFlowManager.setOnDialogflowResultListener(new DialogFlowManager.OnDialogflowResultListener() {
-           @Override
-           public void onRegisterIntentDetected() {
-
-           }
-
-           @Override
-           public void onOtherIntentDetected(String fulfillmentText) {
-
-           }
-
-           @Override
-           public void onParametersReceived(Map<String, Value> parameters, String intentName) {
-               handleDialogFlowParams(parameters,intentName);
-
-           }
-       });
-   }
-
-    private void speak(String text,String utterancedId) {
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-
-            // Verificar versión de Android para usar el método adecuado
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utterancedId);
-            } else {
-                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-            }
+        View rootView = findViewById(android.R.id.content);
+        if (rootView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
         }
+
+        // Inicializar TTS
+        initTextToSpeech();
     }
 
     @Override
     protected void handleVoiceCommand(String command, String result) {
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-        if (command.contains("mapa")) {
-            Intent intent = new Intent(this, MapaUI.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
+        String lowerCommand = command.toLowerCase();
 
+        if (lowerCommand.contains("mapa")) {
+            navigateToMap();
+        } else if (lowerCommand.contains("salir")) {
+            finishAffinity();
         }
     }
-
-    @Override
-    public void onTextToSpeechReady() {
-        if (speechManager != null) {
-            speechManager.speak("¿Tienes cuenta?", "ask_name");
-        }
-
+    private void navigateToMap() {
+        Intent intent = new Intent(login.this, MapaUI.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
-    @Override
-    public void onTextToSpeechError() {
+    private void initTextToSpeech() {
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                // Configurar idioma español
+                int result = textToSpeech.setLanguage(new Locale("es", "MX"));
 
-    }
-
-    @Override
-    public void onSpeechResult(String spokenText) {
-        if (dialogFlowManager != null && speechManager != null && speechManager.getTextToSpeech() != null) {
-            dialogFlowManager.sendToDialogFlow(spokenText, speechManager.getTextToSpeech(),speechManager);
-        } else {
-            Log.e("Login", "dialogFlowManager o speechManager no están listos para procesar el resultado de voz.");
-        }
-
-    }
-
-    @Override
-    protected void onActivityResult (int requestCode, int resultCode, android.content.Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //speechManager.onActivityResult(requestCode,resultCode,data);
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(speechManager != null){
-            speechManager.shutdown();
-        }
-
-
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-
-        }
-        speechManager.shutdown();
-    }
-
-    private void handleDialogFlowParams(Map<String,Value> parameters,String intentName){
-        runOnUiThread(() -> {
-            Log.d("Login", "Intent received: " + intentName + ", Parameters: " + parameters.toString());
-            if (intentName.equals("iniciarSesion")) {
-                Value nombreValue = parameters.get("respuesta_confirmacion");
-                if (nombreValue != null) {
-                    String valueCinfirCuent = nombreValue.getStringValue();
-                    if (valueCinfirCuent.equals("sí") || valueCinfirCuent.equals("sí tengo") || valueCinfirCuent.equals("sí tengo cuenta")) {
-                        // User confirmed they have an account, proceed to next steps
-                       // speechManager.speak("Por favor, dime tu correo electrónico.", "ask_email");
-                    } else {
-                        speechManager.stopSpeaking();
-                        Intent intent = new Intent(login.this, RegistrerUser.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        startActivity(intent);
-                        finish();
-                    }
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e(TAG, "El idioma no está soportado");
                 } else {
-                    speechManager.speak("No entendí tu respuesta, ¿tienes cuenta?", "ask_name_retry");
-                }
-            } else if (intentName.equals("pedirCorreo")) {
-                if (parameters.containsKey("correosSconfirm")) {
-                    Value nombreValueCorr = parameters.get("correosSconfirm");
-                    try {
-                        String correo = nombreValueCorr.getStringValue();
-                        Log.d("Login", "Setting email in EditText: " + correo);
-                        etCorreo.setText(correo);
-                        speechManager.speak("Gracias, ahora dime tu contraseña.", "ask_password");
-                    } catch (Exception e) {
-                        Log.e("Login", "Error setting email: " + e.getMessage());
-                        speechManager.speak("No entendí tu correo, por favor repítelo.", "ask_name_retry");
-                    }
-                } else {
-                    Log.e("Login", "Parameter 'correosSconfirm' not found in parameters: " + parameters.toString());
-                    speechManager.speak("No entendí tu correo, por favor repítelo.", "ask_name_retry");
-                }
-            } else if (intentName.equals("pedirContrasenha")) {
-                if (parameters.containsKey("contraseaSesion")) {
-                    Value nombreValueContra = parameters.get("contraseaSesion");
-                    try {
-                        String contrasena = nombreValueContra.getStringValue();
-                        Log.d("Login", "Setting password in EditText: " + contrasena);
-                        etPassword.setText(contrasena);
-                        speechManager.speak("Gracias, intentando iniciar sesión.", "login_attempt");
-                        // Add login logic here if needed
-                    } catch (Exception e) {
-                        Log.e("Login", "Error setting password: " + e.getMessage());
-                        speechManager.speak("No entendí tu contraseña, por favor repítelo.", "ask_name_retry");
-                    }
-                } else {
-                    Log.e("Login", "Parameter 'contraseaSesion' not found in parameters: " + parameters.toString());
-                    speechManager.speak("No entendí tu contraseña, por favor repítelo.", "ask_name_retry");
-                }
-            } else if (intentName.equals("finalizarsesion")){
-                if (parameters.containsKey("finalizarSe")){
-                    Value nombreS = parameters.get("finalizarSe");
-                    try {
-                        String confirSesion = nombreS.getStringValue();
-                        if (confirSesion.equals("sí")){
-
-                        }else {
-                            speak("cancenlando inicio de sesion,regresando a la pantalla principal","confir_datos_retry");
-                            new Handler().postDelayed(()->{
-                                Intent intent = new Intent(login.this, MapaUI.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivity(intent);
-                                finish();
-                            },5000);
+                    // Configurar listener para saber cuándo termina de hablar
+                    textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                        @Override
+                        public void onStart(String utteranceId) {
+                            // No necesitamos hacer nada al inicio
                         }
-                    }catch (Exception e){
 
-                    }
+                        @Override
+                        public void onDone(String utteranceId) {
+                            // Cuando termina de hablar, comenzamos a escuchar
+                            runOnUiThread(() -> {
+                                switch (utteranceId) {
+                                    case "ask_account":
+                                    case "ask_email":
+                                    case "ask_password":
+                                    case "confirm_login":
+                                        if (ContextCompat.checkSelfPermission(login.this,
+                                                Manifest.permission.RECORD_AUDIO) ==
+                                                PackageManager.PERMISSION_GRANTED) {
+                                            startVoiceRecognition();
+                                        } else {
+                                            // Aquí podrías solicitar el permiso
+                                            Toast.makeText(login.this,
+                                                    "Se requiere permiso para usar el micrófono",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                        break;
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(String utteranceId) {
+                            // En caso de error, también intentamos escuchar
+                            runOnUiThread(() -> {
+                                if (ContextCompat.checkSelfPermission(login.this,
+                                        Manifest.permission.RECORD_AUDIO) ==
+                                        PackageManager.PERMISSION_GRANTED) {
+                                    startVoiceRecognition();
+                                }
+                            });
+                        }
+                    });
+
+                    // Iniciar la conversación preguntando si tiene cuenta
+                    speak("¿Tienes cuenta?", "ask_account");
                 }
-            }else {
-                speechManager.speak("No entendí tu respuesta, por favor intenta de nuevo.", "ask_name_retry");
-
+            } else {
+                Log.e(TAG, "Error al inicializar TextToSpeech");
             }
         });
     }
 
+    private void speak(String text, String utteranceId) {
+        if (textToSpeech != null) {
+            // Detener cualquier pronunciación en curso
+            textToSpeech.stop();
+
+            // Hablar con el utteranceId para saber cuándo termina
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+            } else {
+                // Para versiones antiguas
+                @SuppressWarnings("deprecation")
+                int result = textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                Log.d(TAG, "Speak result: " + result);
+            }
+        }
+    }
+
+    private void startVoiceRecognition() {
+        if (isListening) {
+            Log.d(TAG, "Ya hay un reconocimiento de voz en curso");
+            return;
+        }
+
+        isListening = true;
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, new Locale("es", "MX"));
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Di un comando...");
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000);
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 3000);
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000);
+
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+
+        try {
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
+            Log.d(TAG, "Iniciando reconocimiento de voz para estado: " + currentState);
+        } catch (Exception e) {
+            isListening = false;
+            Log.e(TAG, "Error al iniciar reconocimiento de voz: " + e.getMessage());
+            Toast.makeText(this, "Error al iniciar reconocimiento de voz", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SPEECH_REQUEST_CODE) {
+            isListening = false;
+
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (results != null && !results.isEmpty()) {
+                    String spokenText = results.get(0).toLowerCase();
+                    Log.d(TAG, "Texto reconocido: " + spokenText);
+
+                    // Procesar el texto según el estado actual
+                    processVoiceInput(spokenText);
+                } else {
+                    handleNoSpeechDetected();
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                handleNoSpeechDetected();
+            }
+        }
+    }
+
+    private void processVoiceInput(String spokenText) {
+        switch (currentState) {
+            case ASKING_ACCOUNT:
+                handleAccountResponse(spokenText);
+                break;
+            case ASKING_EMAIL:
+                handleEmailResponse(spokenText);
+                break;
+            case ASKING_PASSWORD:
+                handlePasswordResponse(spokenText);
+                break;
+            case CONFIRMING_LOGIN:
+                handleLoginConfirmation(spokenText);
+                break;
+        }
+    }
+
+    private void handleAccountResponse(String response) {
+        response = response.toLowerCase();
+
+        // Verificar si contiene alguna afirmación
+        if (response.contains("sí") || response.contains("si") || response.contains("claro") ||
+                response.contains("por supuesto") || response.contains("tengo") ||
+                response.contains("tengo cuenta")) {
+            // Usuario tiene cuenta, pedir correo
+            currentState = ConversationState.ASKING_EMAIL;
+            speak("Por favor, dime tu correo electrónico", "ask_email");
+        }
+        // Verificar si contiene alguna negación
+        else if (response.contains("no") || response.contains("no tengo") ||
+                response.contains("no tengo cuenta") || response.contains("negativo")) {
+            // Usuario no tiene cuenta, redirigir a registro
+            speak("Entendido, te enviaré a la pantalla de registro", "redirect_register");
+
+            // Esperar un momento antes de redirigir
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(login.this, RegistrerUser.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+            }, 2000);
+        }
+        else {
+            // No se entendió la respuesta
+            speak("No entendí tu respuesta. Por favor, responde sí o no. ¿Tienes cuenta?", "ask_account");
+        }
+    }
+
+    private void handleEmailResponse(String email) {
+        // Validación simple de correo (puedes mejorarla)
+        if (email.contains("@") && email.contains(".")) {
+            // Mostrar el correo en el campo
+            etCorreo.setText(email.replaceAll("\\s+", "").toLowerCase());
+
+            // Pasar al siguiente estado
+            currentState = ConversationState.ASKING_PASSWORD;
+            speak("Gracias, ahora dime tu contraseña", "ask_password");
+        } else {
+            // Formato de correo incorrecto
+            speak("El formato del correo no parece correcto. Por favor, dime tu correo electrónico nuevamente",
+                    "ask_email");
+        }
+    }
+
+    private void handlePasswordResponse(String password) {
+        // No validamos la contraseña, solo la colocamos en el campo
+        etPassword.setText(password.replaceAll("\\s+", ""));
+
+        // Pasar al estado de confirmación
+        currentState = ConversationState.CONFIRMING_LOGIN;
+        speak("¿Deseas iniciar sesión ahora?", "confirm_login");
+    }
+
+    private void handleLoginConfirmation(String response) {
+        response = response.toLowerCase();
+
+        if (response.contains("sí") || response.contains("si") || response.contains("claro") ||
+                response.contains("por supuesto") || response.contains("adelante")) {
+            // Confirmar inicio de sesión
+            speak("Iniciando sesión, por favor espera", "login_process");
+
+            // Aquí deberías implementar tu lógica real de autenticación
+            // Por ahora solo redirigimos después de un retraso
+            new Handler().postDelayed(() -> {
+                // Simular inicio de sesión exitoso
+                Intent intent = new Intent(login.this, MapaUI.class);
+                startActivity(intent);
+                finish();
+            }, 2000);
+        }
+        else if (response.contains("no") || response.contains("cancelar") || response.contains("negativo")) {
+            // Cancelar inicio de sesión
+            speak("He cancelado el inicio de sesión. Regresando a la pantalla principal", "login_cancel");
+
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(login.this, MapaUI.class);
+                startActivity(intent);
+                finish();
+            }, 2000);
+        }
+        else {
+            // No se entendió la respuesta
+            speak("No entendí tu respuesta. Por favor responde sí o no. ¿Deseas iniciar sesión ahora?",
+                    "confirm_login");
+        }
+    }
+
+    private void handleNoSpeechDetected() {
+        Log.d(TAG, "No se detectó voz");
+
+        switch (currentState) {
+            case ASKING_ACCOUNT:
+                speak("No escuché tu respuesta. ¿Tienes cuenta?", "ask_account");
+                break;
+            case ASKING_EMAIL:
+                speak("No escuché tu correo. Por favor, dime tu correo electrónico", "ask_email");
+                break;
+            case ASKING_PASSWORD:
+                speak("No escuché tu contraseña. Por favor, dime tu contraseña", "ask_password");
+                break;
+            case CONFIRMING_LOGIN:
+                speak("No escuché tu confirmación. ¿Deseas iniciar sesión ahora?", "confirm_login");
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Liberar recursos de TTS
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+    }
 }
