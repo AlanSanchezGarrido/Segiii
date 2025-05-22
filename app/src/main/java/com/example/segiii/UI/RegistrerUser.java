@@ -97,6 +97,11 @@ public class RegistrerUser extends VoiceNavigationActivity {
                     askForCurrentField();
                 }, 1000);
             }
+
+            @Override
+            public void onNavigationCommand(String destination) {
+
+            }
         });
 
         // Configuramos expresamente el modo de entrada de datos

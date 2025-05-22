@@ -57,6 +57,11 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
                 isRecognitionEnabled = false;
                 Toast.makeText(VoiceNavigationActivity.this, "Reconocimiento desactivado. Di 'Okey Segui' para activar", Toast.LENGTH_LONG).show();
             }
+
+            @Override
+            public void onNavigationCommand(String destination) {
+
+            }
         });
 
         // Inicializar el detector de la palabra clave "Okey Segui"
