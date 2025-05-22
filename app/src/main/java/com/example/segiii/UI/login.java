@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,14 +35,15 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class login extends VoiceNavigationActivity {
+    private boolean isPasswordVisible = false;
     private static final String TAG = "LoginActivity";
     private static final int SPEECH_REQUEST_CODE = 100;
 
     private EditText etCorreo, etPassword;
+    private ImageButton btnTogglePassword; // Added
     private SegiDataBase segiDataBase;
     private TextToSpeech textToSpeech;
 
-    // Estado actual del flujo de conversación
     private enum ConversationState {
         ASKING_ACCOUNT,
         ASKING_EMAIL,
@@ -64,6 +66,23 @@ public class login extends VoiceNavigationActivity {
         // Inicializar campos
         etCorreo = findViewById(R.id.edit_email);
         etPassword = findViewById(R.id.edit_password);
+        btnTogglePassword = findViewById(R.id.btnTogglePassword); // Initialize ImageButton
+
+        // Toggle password visibility
+        btnTogglePassword.setOnClickListener(v -> {
+            isPasswordVisible = !isPasswordVisible;
+            if (isPasswordVisible) {
+                // Show password and set open eye icon
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.visibilidad);
+            } else {
+                // Hide password and set closed eye icon
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.ojo);
+            }
+            // Move cursor to the end of the text
+            etPassword.setSelection(etPassword.getText().length());
+        });
 
         // Botón para regresar
         ImageButton imgBack = findViewById(R.id.img_back);
@@ -122,8 +141,27 @@ public class login extends VoiceNavigationActivity {
             navigateToMap();
         } else if (lowerCommand.contains("salir")) {
             finishAffinity();
+        } else if (lowerCommand.contains("mostrar contraseña") || lowerCommand.contains("ver contraseña")) {
+            // Optional: Handle voice command to show password
+            if (!isPasswordVisible) {
+                isPasswordVisible = true;
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.visibilidad);
+                etPassword.setSelection(etPassword.getText().length());
+                speak("Contraseña visible", "password_visible");
+            }
+        } else if (lowerCommand.contains("ocultar contraseña")) {
+            // Optional: Handle voice command to hide password
+            if (isPasswordVisible) {
+                isPasswordVisible = false;
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.ojo);
+                etPassword.setSelection(etPassword.getText().length());
+                speak("Contraseña oculta", "password_hidden");
+            }
         }
     }
+
     private void navigateToMap() {
         Intent intent = new Intent(login.this, MapaUI.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -134,13 +172,10 @@ public class login extends VoiceNavigationActivity {
     private void initTextToSpeech() {
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                // Configurar idioma español
                 int result = textToSpeech.setLanguage(new Locale("es", "MX"));
-
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e(TAG, "El idioma no está soportado");
                 } else {
-                    // Configurar listener para saber cuándo termina de hablar
                     textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                         @Override
                         public void onStart(String utteranceId) {
@@ -149,7 +184,6 @@ public class login extends VoiceNavigationActivity {
 
                         @Override
                         public void onDone(String utteranceId) {
-                            // Cuando termina de hablar, comenzamos a escuchar
                             runOnUiThread(() -> {
                                 switch (utteranceId) {
                                     case "ask_account":
@@ -161,7 +195,6 @@ public class login extends VoiceNavigationActivity {
                                                 PackageManager.PERMISSION_GRANTED) {
                                             startVoiceRecognition();
                                         } else {
-                                            // Aquí podrías solicitar el permiso
                                             Toast.makeText(login.this,
                                                     "Se requiere permiso para usar el micrófono",
                                                     Toast.LENGTH_SHORT).show();
@@ -173,7 +206,6 @@ public class login extends VoiceNavigationActivity {
 
                         @Override
                         public void onError(String utteranceId) {
-                            // En caso de error, también intentamos escuchar
                             runOnUiThread(() -> {
                                 if (ContextCompat.checkSelfPermission(login.this,
                                         Manifest.permission.RECORD_AUDIO) ==
@@ -183,8 +215,6 @@ public class login extends VoiceNavigationActivity {
                             });
                         }
                     });
-
-                    // Iniciar la conversación preguntando si tiene cuenta
                     speak("¿Tienes cuenta?", "ask_account");
                 }
             } else {
@@ -195,14 +225,10 @@ public class login extends VoiceNavigationActivity {
 
     private void speak(String text, String utteranceId) {
         if (textToSpeech != null) {
-            // Detener cualquier pronunciación en curso
             textToSpeech.stop();
-
-            // Hablar con el utteranceId para saber cuándo termina
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
             } else {
-                // Para versiones antiguas
                 @SuppressWarnings("deprecation")
                 int result = textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                 Log.d(TAG, "Speak result: " + result);
@@ -225,7 +251,6 @@ public class login extends VoiceNavigationActivity {
         intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000);
         intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 3000);
         intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000);
-
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
 
         try {
@@ -250,8 +275,6 @@ public class login extends VoiceNavigationActivity {
                 if (results != null && !results.isEmpty()) {
                     String spokenText = results.get(0).toLowerCase();
                     Log.d(TAG, "Texto reconocido: " + spokenText);
-
-                    // Procesar el texto según el estado actual
                     processVoiceInput(spokenText);
                 } else {
                     handleNoSpeechDetected();
@@ -282,55 +305,38 @@ public class login extends VoiceNavigationActivity {
     private void handleAccountResponse(String response) {
         response = response.toLowerCase();
 
-        // Verificar si contiene alguna afirmación
         if (response.contains("sí") || response.contains("si") || response.contains("claro") ||
                 response.contains("por supuesto") || response.contains("tengo") ||
                 response.contains("tengo cuenta")) {
-            // Usuario tiene cuenta, pedir correo
             currentState = ConversationState.ASKING_EMAIL;
             speak("Por favor, dime tu correo electrónico", "ask_email");
-        }
-        // Verificar si contiene alguna negación
-        else if (response.contains("no") || response.contains("no tengo") ||
+        } else if (response.contains("no") || response.contains("no tengo") ||
                 response.contains("no tengo cuenta") || response.contains("negativo")) {
-            // Usuario no tiene cuenta, redirigir a registro
             speak("Entendido, te enviaré a la pantalla de registro", "redirect_register");
-
-            // Esperar un momento antes de redirigir
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(login.this, RegistrerUser.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 finish();
             }, 2000);
-        }
-        else {
-            // No se entendió la respuesta
+        } else {
             speak("No entendí tu respuesta. Por favor, responde sí o no. ¿Tienes cuenta?", "ask_account");
         }
     }
 
     private void handleEmailResponse(String email) {
-        // Validación simple de correo (puedes mejorarla)
         if (email.contains("@") && email.contains(".")) {
-            // Mostrar el correo en el campo
             etCorreo.setText(email.replaceAll("\\s+", "").toLowerCase());
-
-            // Pasar al siguiente estado
             currentState = ConversationState.ASKING_PASSWORD;
             speak("Gracias, ahora dime tu contraseña", "ask_password");
         } else {
-            // Formato de correo incorrecto
             speak("El formato del correo no parece correcto. Por favor, dime tu correo electrónico nuevamente",
                     "ask_email");
         }
     }
 
     private void handlePasswordResponse(String password) {
-        // No validamos la contraseña, solo la colocamos en el campo
         etPassword.setText(password.replaceAll("\\s+", ""));
-
-        // Pasar al estado de confirmación
         currentState = ConversationState.CONFIRMING_LOGIN;
         speak("¿Deseas iniciar sesión ahora?", "confirm_login");
     }
@@ -340,30 +346,20 @@ public class login extends VoiceNavigationActivity {
 
         if (response.contains("sí") || response.contains("si") || response.contains("claro") ||
                 response.contains("por supuesto") || response.contains("adelante")) {
-            // Confirmar inicio de sesión
             speak("Iniciando sesión, por favor espera", "login_process");
-
-            // Aquí deberías implementar tu lógica real de autenticación
-            // Por ahora solo redirigimos después de un retraso
             new Handler().postDelayed(() -> {
-                // Simular inicio de sesión exitoso
                 Intent intent = new Intent(login.this, MapaUI.class);
                 startActivity(intent);
                 finish();
             }, 2000);
-        }
-        else if (response.contains("no") || response.contains("cancelar") || response.contains("negativo")) {
-            // Cancelar inicio de sesión
+        } else if (response.contains("no") || response.contains("cancelar") || response.contains("negativo")) {
             speak("He cancelado el inicio de sesión. Regresando a la pantalla principal", "login_cancel");
-
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(login.this, MapaUI.class);
                 startActivity(intent);
                 finish();
             }, 2000);
-        }
-        else {
-            // No se entendió la respuesta
+        } else {
             speak("No entendí tu respuesta. Por favor responde sí o no. ¿Deseas iniciar sesión ahora?",
                     "confirm_login");
         }
@@ -391,8 +387,6 @@ public class login extends VoiceNavigationActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        // Liberar recursos de TTS
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();

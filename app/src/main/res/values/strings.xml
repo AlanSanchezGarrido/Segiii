@@ -12,4 +12,6 @@
     <string name="txt_correo_electronico">Correo electrónico</string>
     <string name="txt_registrar">¿No estas registrado? Registrate</string>
     <string name="txt_olvidar">¿Olvidaste tu contraseña?</string>
+    <string name="txt_destino">Ubicacion</string>
+    <string name="txt_buscar_lugar">¿A que lugar deseas ir?</string>
 </resources>

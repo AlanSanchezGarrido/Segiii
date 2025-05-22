@@ -25,4 +25,8 @@ public interface UsuarioDAO {
     Usuario getUsuarioById (long id);
     @Query("SELECT * FROM Usuario WHERE usuario = :username")
     Usuario getUsuarioByUsername(String username);
+
+
+
+
 }

@@ -11,7 +11,7 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
     protected wordSegui wordSegui;
     protected SpeedRecognizer speedRecognizer;
     protected TTSManager ttsManager;
-    protected static final String PICOVOICE_ACCESS_KEY = "clave_pico";
+    protected static final String PICOVOICE_ACCESS_KEY = "";
     private static final String TAG = "VoiceNavigation";
     private boolean isActivityActive = false;
     // Bandera para controlar si el reconocimiento está activo o fue cancelado manualmente
