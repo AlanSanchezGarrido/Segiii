@@ -10,34 +10,39 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/boton"
-        android:text="Alto contraste" />
+        android:text="Alto contraste"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/btn_colorblind_red_green2"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/boton"
-        android:text="Daltonismo Rojo-Verde" />
+        android:text="Daltonismo Rojo"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/btn_colorblind_blue_yellow3"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/boton"
-        android:text="Daltonismo Azul-Amarillo" />
+        android:text="Daltonismo Azul"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/btn_increase_text_size4"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/boton"
-        android:text="Aumentar tamaño de texto" />
+        android:text="Aumentar tamaño de texto"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/btn_reset_filters5"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/boton"
-        android:text="Restablecer filtros" />
+        android:text="Restablecer filtros"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

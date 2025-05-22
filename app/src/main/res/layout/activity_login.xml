@@ -6,9 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1976D2"
-    tools:context=".UI.login">
+    tools:context=".UI.login"
+    tools:layout_editor_absoluteX="4dp"
+    tools:layout_editor_absoluteY="9dp">
 
-    <!-- Guías verticales para márgenes adaptables -->
+    <!-- Guías verticales -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -23,29 +25,21 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
 
-    <!-- Guía horizontal para el CardView -->
+    <!-- Guía horizontal -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.30" />
+        app:layout_constraintGuide_begin="237dp" />
 
-    <!-- Guía horizontal para el texto inferior -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.80" />
-
-    <!-- Imagen de "Volver" -->
+    <!-- Botón volver -->
     <ImageButton
         android:id="@+id/img_back"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
         android:contentDescription="Volver"
         android:scaleType="fitCenter"
@@ -53,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Imagen del logo SEGI -->
+    <!-- Logo SEGI -->
     <ImageView
         android:id="@+id/logo_segi"
         android:layout_width="117dp"
@@ -64,10 +58,9 @@
         app:layout_constraintBottom_toBottomOf="@id/img_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/img_back"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@id/img_back" />
 
-    <!-- Imagen del robot -->
+    <!-- Robot -->
     <ImageView
         android:id="@+id/img_robot"
         android:layout_width="164dp"
@@ -80,14 +73,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_back" />
 
-    <!-- Tarjeta contenedora -->
+    <!-- CardView de login -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         app:cardBackgroundColor="#60B5E3"
         app:cardCornerRadius="20dp"
         app:cardElevation="4dp"
@@ -97,7 +90,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="24dp">
 
@@ -112,7 +105,6 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <!-- Correo -->
             <TextView
                 android:id="@+id/email_label"
                 android:layout_width="wrap_content"
@@ -129,12 +121,15 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/txt_correo_electronico"
                 android:inputType="textEmailAddress"
-                android:padding="12dp"
-                />
+                android:background="@null"
+                style="@style/EditTextNoBackground" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="2dp"
+                android:background="#000000" />
 
-
-            <!-- Contraseña -->
             <TextView
                 android:id="@+id/password_label"
                 android:layout_width="wrap_content"
@@ -145,72 +140,106 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edit_password"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="@string/txt_contraseña"
-                android:inputType="textPassword"
-                android:padding="12dp" />
+                android:orientation="horizontal">
 
+                <EditText
+                    android:id="@+id/edit_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:hint="@string/txt_contraseña"
+                    android:inputType="textPassword"
+                    android:background="@null"
+                    style="@style/EditTextNoBackground" />
 
+                <ImageButton
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Mostrar/Ocultar contraseña"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ojo" />
 
-            <!-- Botón Ingresar -->
-            <Button
-                android:id="@+id/btn_ingresar"
+            </LinearLayout>
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/boton"
-                android:paddingVertical="2dp"
-                android:text="@string/btn_ingresar"
-                android:textColor="#FFFFFF"
-                android:textSize="30sp" />
-
+                android:layout_height="1dp"
+                android:layout_marginTop="2dp"
+                android:background="#000000" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-
-    <TextView
-        android:id="@+id/txt_options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:text="@string/txt_registrar"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.652"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toTopOf="@id/guideline_bottom_text" />
-
+    <!-- ¿Olvidaste tu contraseña? -->
     <TextView
         android:id="@+id/txt_rewrite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/txt_olvidar"
+        android:layout_marginBottom="5dp"
+        android:text="¿Olvidaste tu contraseña?"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/btn_ingresar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Botón Ingresar -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_ingresar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
+        android:minHeight="60dp"
+        android:text="@string/btn_ingresar"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:backgroundTint="@color/boton"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/card_container"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RectangularButton" />
+
+    <!-- Registrarse -->
+    <TextView
+        android:id="@+id/txt_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/txt_registrar"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.522"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/txt_options" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_ingresar" />
 
+    <!-- Botón de accesibilidad -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_accessibility"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="468dp"
-        android:contentDescription="Accesibilidad"
+        android:layout_marginEnd="12dp"
         android:src="@drawable/accessible"
-        app:backgroundTint="#FFFF00"
+        app:backgroundTint="#FFFA8D"
+        app:iconSize="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.FullyRound" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

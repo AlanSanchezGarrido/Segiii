@@ -1,7 +1,62 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Segiii" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<resources>
+    <!-- Tema base (modo normal) -->
+    <style name="Theme.Segiii" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@color/primary_blue</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColorHint">@color/gray</item>
+        <item name="android:iconTint">@android:color/black</item>
+        <item name="colorButtonNormal">@color/boton</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:buttonTint">@color/boton</item>
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorControlActivated">@color/primary_blue</item>
+        <item name="colorControlHighlight">@color/primary_blue</item>
+    </style>
+
+    <!-- Tema para modo de alto contraste -->
+    <style name="Theme.Segiii.HighContrast" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorHint">@color/light_gray</item>
+        <item name="android:iconTint">@color/white</item>
+        <item name="colorButtonNormal">@color/dark_gray</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:buttonTint">@color/dark_gray</item>
+        <item name="colorPrimary">#42A5F5</item>
+        <item name="colorControlActivated">#42A5F5</item>
+        <item name="colorControlHighlight">#42A5F5</item>
+    </style>
+
+    <!-- Tema para modo de daltonismo protanopia (rojo) -->
+    <style name="Theme.Segiii.Protanopia" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorHint">@color/light_gray</item>
+        <item name="android:iconTint">@color/yellow</item>
+        <item name="colorButtonNormal">@color/yellow</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:buttonTint">@color/yellow</item>
+        <item name="colorPrimary">#42A5F5</item>
+        <item name="colorControlActivated">#42A5F5</item>
+        <item name="colorControlHighlight">#42A5F5</item>
+    </style>
+
+    <!-- Estilo para el botón rectangular -->
+    <style name="ShapeAppearanceOverlay.RectangularButton" parent="">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">0dp</item>
+    </style>
+
+    <!-- Estilo para el FAB completamente redondo -->
+    <style name="ShapeAppearanceOverlay.FullyRound" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Estilo para EditText sin fondo -->
+    <style name="EditTextNoBackground" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@null</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:backgroundTint">@android:color/transparent</item>
     </style>
 </resources>

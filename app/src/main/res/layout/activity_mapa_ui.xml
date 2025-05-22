@@ -5,61 +5,189 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Text box overlaid on top of the map with solid blue and larger sides -->
+
+    <!-- Mini-window overlay (initially hidden) -->
+
     <fragment
         android:id="@+id/Map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_cener_locartion"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:src="@drawable/ic_my_location"
+    <EditText
+        android:id="@+id/edit_destination"
+        android:layout_width="351dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:background="#2196F3"
+        android:hint="Ubicación de destino"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="49dp"
-        android:layout_marginEnd="17dp" />
+        app:layout_constraintHorizontal_bias="0.423"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.147" />
 
+    <LinearLayout
+        android:id="@+id/mini_window"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_background"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Header with title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UBICACIÓN"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="#2196F3"
+            android:padding="8dp" />
+
+        <!-- Content with pin and EditText -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_pin"
+                android:contentDescription="Pin location" />
+
+            <EditText
+                android:id="@+id/edit_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="NOMBRE"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                android:background="@android:drawable/edit_text"
+                android:padding="8dp"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="X"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#F44336"
+                android:layout_marginEnd="16dp"
+                android:padding="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#4CAF50"
+                android:padding="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Primera columna de FABs (alineados a la derecha) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_accessibility"
+        android:id="@+id/fab_center_location"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:src="@drawable/accessible"
-        app:layout_constraintBottom_toTopOf="@id/fab_cener_locartion"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_my_location"
+        android:tint="@android:color/white"
+        app:backgroundTint="#1976D2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="48dp"
-        android:layout_marginEnd="17dp" />
-
+        app:tint="@android:color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_ayuda"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="136dp"
-        android:src="@drawable/help"
-        app:layout_constraintBottom_toTopOf="@id/fab_cener_locartion"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/xd"
+        android:tint="@android:color/white"
+        app:backgroundTint="#1976D2"
+        app:layout_constraintBottom_toTopOf="@id/fab_center_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_user"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/user_icon"
+        android:tint="@android:color/white"
+        app:backgroundTint="#1976D2"
+        app:layout_constraintBottom_toTopOf="@+id/fab_ayuda"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
+
+    <!-- Save button to trigger the mini-window -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_save"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="92dp"
+        android:src="@drawable/xdd"
+        android:tint="@android:color/white"
+        app:backgroundTint="#1976D2"
+        app:layout_constraintBottom_toTopOf="@id/fab_ayuda"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
 
     <ImageView
         android:id="@+id/splash_overlay"
-        android:layout_width="272dp"
-        android:layout_height="537dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="centerInside"
         android:src="@drawable/segiregistrer"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.5"
-        app:layout_constraintHorizontal_bias="0.078"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.956"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintVertical_bias="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

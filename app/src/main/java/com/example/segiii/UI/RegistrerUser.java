@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,7 +33,7 @@ import java.util.List;
 
 public class RegistrerUser extends AppCompatActivity {
     private static final String TAG = "RegistrerUser";
-    private EditText editTextNombre, editTextApellidos, editTextEmail, editTextContrasena, editTextConfirmarContrasena;
+    private EditText etNombre, etApellidos, etEmal, etPassword, etConfirmPassword,email;
     private Button btnGuardar;
     private ImageButton btnActualizar, imgBack;
     private ImageView robotImage;
@@ -42,19 +43,22 @@ public class RegistrerUser extends AppCompatActivity {
     private SegiDataBase db;
     private Usuario usuarioActual;
 
+    private ImageButton btnTogglePassword, btnToggleConfirmPassword;
+    private boolean isPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_registrer_user);
 
-
         mainLayout = findViewById(R.id.main_layout);
-        editTextNombre = findViewById(R.id.editTextNombre);
-        editTextApellidos = findViewById(R.id.editTextApellidos);
-        editTextEmail = findViewById(R.id.email);
-        editTextContrasena = findViewById(R.id.editTextContrasena);
-        editTextConfirmarContrasena = findViewById(R.id.editTextConfirmarContrasena);
+        etNombre = findViewById(R.id.et_nombre);
+        etApellidos = findViewById(R.id.et_apellido);
+        etEmal = findViewById(R.id.et_email);
+        etPassword = findViewById(R.id.et_password);
+        etConfirmPassword = findViewById(R.id.et_confirpassword);
         btnGuardar = findViewById(R.id.img_save);
         btnActualizar = findViewById(R.id.edit_button);
         imgBack = findViewById(R.id.img_back);
@@ -66,11 +70,12 @@ public class RegistrerUser extends AppCompatActivity {
         emailLabel = findViewById(R.id.email_label);
         contrasenaLabel = findViewById(R.id.contrasena_label);
         confirmarContrasenaLabel = findViewById(R.id.confirmar_contrasena_label);
+        btnTogglePassword = findViewById(R.id.btnTogglePassword);
+        btnToggleConfirmPassword = findViewById(R.id.btnToggleConfirmPassword);
         db = SegiDataBase.getDatabase(this);
 
         applyAccessibilitySettings();
 
-        // Botón Volver
         imgBack.setOnClickListener(v -> {
             Log.d(TAG, "Clic en img_back");
             Toast.makeText(this, "Redirigiendo a MapaUI", Toast.LENGTH_SHORT).show();
@@ -93,12 +98,43 @@ public class RegistrerUser extends AppCompatActivity {
             showAccessibilityMenu();
         });
         setupPasswordValidation();
+        setupPasswordToggle();
         cargarPrimerUsuario();
     }
 
+    private void setupPasswordToggle() {
+        btnTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
+        btnToggleConfirmPassword.setOnClickListener(v -> toggleConfirmPasswordVisibility());
+    }
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btnTogglePassword.setImageResource(R.drawable.ojo);
+            isPasswordVisible = false;
+        } else {
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            btnTogglePassword.setImageResource(R.drawable.visibilidad);
+            isPasswordVisible = true;
+        }
+        etPassword.setSelection(etPassword.getText().length());
+    }
+
+    private void toggleConfirmPasswordVisibility() {
+        if (isConfirmPasswordVisible) {
+            etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btnToggleConfirmPassword.setImageResource(R.drawable.ojo);
+            isConfirmPasswordVisible = false;
+        } else {
+            etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            btnToggleConfirmPassword.setImageResource(R.drawable.visibilidad);
+            isConfirmPasswordVisible = true;
+        }
+        etConfirmPassword.setSelection(etConfirmPassword.getText().length());
+    }
+
     private void setupPasswordValidation() {
-        // Validar al presionar "Done" o Enter en confirmar contraseña
-        editTextConfirmarContrasena.setOnEditorActionListener((v, actionId, event) -> {
+        etConfirmPassword.setOnEditorActionListener((v, actionId, event) -> {
             Log.d(TAG, "OnEditorAction: actionId=" + actionId + ", event=" + (event != null ? event.getKeyCode() : "null"));
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                     (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
@@ -111,8 +147,8 @@ public class RegistrerUser extends AppCompatActivity {
     }
 
     private void validatePasswords() {
-        String password = editTextContrasena.getText().toString();
-        String confirmPassword = editTextConfirmarContrasena.getText().toString();
+        String password = etPassword.getText().toString();
+        String confirmPassword = etConfirmPassword.getText().toString();
         SharedPreferences prefs = getSharedPreferences("AccessibilityPrefs", Context.MODE_PRIVATE);
         boolean highContrast = prefs.getBoolean("high_contrast", false);
         boolean audioEnabled = prefs.getBoolean("audio_enabled", true);
@@ -120,39 +156,35 @@ public class RegistrerUser extends AppCompatActivity {
 
         Log.d(TAG, "Validando contraseñas: password=" + password + ", confirmPassword=" + confirmPassword);
 
-        // Validar si ambos campos tienen contenido
         if (!password.isEmpty() && !confirmPassword.isEmpty()) {
             if (!password.equals(confirmPassword)) {
-                // Contraseñas no coinciden
                 Log.d(TAG, "Contraseñas no coinciden, aplicando borde rojo");
-                editTextContrasena.setBackgroundResource(R.drawable.error_border);
-                editTextConfirmarContrasena.setBackgroundResource(R.drawable.error_border);
-                editTextContrasena.setTextColor(defaultTextColor);
-                editTextConfirmarContrasena.setTextColor(defaultTextColor);
-                editTextContrasena.invalidate(); // Forzar actualización visual
-                editTextConfirmarContrasena.invalidate();
+                etPassword.setBackgroundResource(R.drawable.error_border);
+                etConfirmPassword.setBackgroundResource(R.drawable.error_border);
+                etPassword.setTextColor(defaultTextColor);
+                etConfirmPassword.setTextColor(defaultTextColor);
+                etPassword.invalidate();
+                etConfirmPassword.invalidate();
                 if (audioEnabled) {
                 }
                 Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
             } else {
-                // Contraseñas coinciden
                 Log.d(TAG, "Contraseñas coinciden, restableciendo bordes");
-                editTextContrasena.setBackgroundResource(android.R.drawable.edit_text);
-                editTextConfirmarContrasena.setBackgroundResource(android.R.drawable.edit_text);
-                editTextContrasena.setTextColor(Color.parseColor("#60B5E3"));
-                editTextConfirmarContrasena.setTextColor(Color.parseColor("#60B5E3"));
-                editTextContrasena.invalidate();
-                editTextConfirmarContrasena.invalidate();
+                etPassword.setBackgroundResource(android.R.drawable.edit_text);
+                etConfirmPassword.setBackgroundResource(android.R.drawable.edit_text);
+                etPassword.setTextColor(Color.parseColor("#60B5E3"));
+                etConfirmPassword.setTextColor(Color.parseColor("#60B5E3"));
+                etPassword.invalidate();
+                etConfirmPassword.invalidate();
             }
         } else {
-            // Al menos un campo está vacío
             Log.d(TAG, "Campos incompletos, aplicando borde rojo");
-            editTextContrasena.setBackgroundResource(R.drawable.error_border);
-            editTextConfirmarContrasena.setBackgroundResource(R.drawable.error_border);
-            editTextContrasena.setTextColor(defaultTextColor);
-            editTextConfirmarContrasena.setTextColor(defaultTextColor);
-            editTextContrasena.invalidate();
-            editTextConfirmarContrasena.invalidate();
+            etPassword.setBackgroundResource(R.drawable.error_border);
+            etConfirmPassword.setBackgroundResource(R.drawable.error_border);
+            etPassword.setTextColor(defaultTextColor);
+            etConfirmPassword.setTextColor(defaultTextColor);
+            etPassword.invalidate();
+            etConfirmPassword.invalidate();
             if (audioEnabled) {
             }
             Toast.makeText(this, "Completa ambos campos de contraseña", Toast.LENGTH_SHORT).show();
@@ -175,16 +207,18 @@ public class RegistrerUser extends AppCompatActivity {
             confirmarContrasenaLabel.setTextColor(Color.WHITE);
             btnGuardar.setTextColor(Color.WHITE);
             btnGuardar.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.DKGRAY));
-            editTextNombre.setTextColor(Color.WHITE);
-            editTextApellidos.setTextColor(Color.WHITE);
-            editTextEmail.setTextColor(Color.WHITE);
-            editTextContrasena.setTextColor(Color.WHITE);
-            editTextConfirmarContrasena.setTextColor(Color.WHITE);
-            editTextNombre.setHintTextColor(Color.LTGRAY);
-            editTextApellidos.setHintTextColor(Color.LTGRAY);
-            editTextEmail.setHintTextColor(Color.LTGRAY);
-            editTextContrasena.setHintTextColor(Color.LTGRAY);
-            editTextConfirmarContrasena.setHintTextColor(Color.LTGRAY);
+            etNombre.setTextColor(Color.WHITE);
+            etApellidos.setTextColor(Color.WHITE);
+            etEmal.setTextColor(Color.WHITE);
+            etPassword.setTextColor(Color.WHITE);
+            etConfirmPassword.setTextColor(Color.WHITE);
+            etNombre.setHintTextColor(Color.LTGRAY);
+            etApellidos.setHintTextColor(Color.LTGRAY);
+            etEmal.setHintTextColor(Color.LTGRAY);
+            etPassword.setHintTextColor(Color.LTGRAY);
+            etConfirmPassword.setHintTextColor(Color.LTGRAY);
+            btnTogglePassword.setColorFilter(Color.WHITE);
+            btnToggleConfirmPassword.setColorFilter(Color.WHITE);
         } else {
             mainLayout.setBackgroundColor(Color.parseColor("#1976D2"));
             title.setTextColor(Color.BLACK);
@@ -195,16 +229,18 @@ public class RegistrerUser extends AppCompatActivity {
             confirmarContrasenaLabel.setTextColor(Color.BLACK);
             btnGuardar.setTextColor(Color.WHITE);
             btnGuardar.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#212121")));
-            editTextNombre.setTextColor(Color.BLACK);
-            editTextApellidos.setTextColor(Color.BLACK);
-            editTextEmail.setTextColor(Color.BLACK);
-            editTextContrasena.setTextColor(Color.BLACK);
-            editTextConfirmarContrasena.setTextColor(Color.BLACK);
-            editTextNombre.setHintTextColor(Color.GRAY);
-            editTextApellidos.setHintTextColor(Color.GRAY);
-            editTextEmail.setHintTextColor(Color.GRAY);
-            editTextContrasena.setHintTextColor(Color.GRAY);
-            editTextConfirmarContrasena.setHintTextColor(Color.GRAY);
+            etNombre.setTextColor(Color.BLACK);
+            etApellidos.setTextColor(Color.BLACK);
+            etEmal.setTextColor(Color.BLACK);
+            etPassword.setTextColor(Color.BLACK);
+            etConfirmPassword.setTextColor(Color.BLACK);
+            etNombre.setHintTextColor(Color.GRAY);
+            etApellidos.setHintTextColor(Color.GRAY);
+            etEmal.setHintTextColor(Color.GRAY);
+            etPassword.setHintTextColor(Color.GRAY);
+            etConfirmPassword.setHintTextColor(Color.GRAY);
+            btnTogglePassword.setColorFilter(Color.BLACK);
+            btnToggleConfirmPassword.setColorFilter(Color.BLACK);
         }
 
         if ("red_green".equals(colorblindFilter)) {
@@ -220,11 +256,11 @@ public class RegistrerUser extends AppCompatActivity {
             emailLabel.setTextSize(18);
             contrasenaLabel.setTextSize(18);
             confirmarContrasenaLabel.setTextSize(18);
-            editTextNombre.setTextSize(18);
-            editTextApellidos.setTextSize(18);
-            editTextEmail.setTextSize(18);
-            editTextContrasena.setTextSize(18);
-            editTextConfirmarContrasena.setTextSize(18);
+            etNombre.setTextSize(18);
+            etApellidos.setTextSize(18);
+            etEmal.setTextSize(18);
+            etPassword.setTextSize(18);
+            etConfirmPassword.setTextSize(18);
             btnGuardar.setTextSize(40);
         } else {
             title.setTextSize(24);
@@ -233,11 +269,11 @@ public class RegistrerUser extends AppCompatActivity {
             emailLabel.setTextSize(14);
             contrasenaLabel.setTextSize(14);
             confirmarContrasenaLabel.setTextSize(14);
-            editTextNombre.setTextSize(14);
-            editTextApellidos.setTextSize(14);
-            editTextEmail.setTextSize(14);
-            editTextContrasena.setTextSize(14);
-            editTextConfirmarContrasena.setTextSize(14);
+            etNombre.setTextSize(14);
+            etApellidos.setTextSize(14);
+            etEmal.setTextSize(14);
+            etPassword.setTextSize(14);
+            etConfirmPassword.setTextSize(14);
             btnGuardar.setTextSize(35);
         }
     }
@@ -344,11 +380,11 @@ public class RegistrerUser extends AppCompatActivity {
             if (usuarios != null && !usuarios.isEmpty()) {
                 usuarioActual = usuarios.get(0);
                 runOnUiThread(() -> {
-                    editTextNombre.setText(usuarioActual.getNombre());
-                    editTextApellidos.setText(usuarioActual.getApellidos());
-                    editTextEmail.setText(usuarioActual.getEmail());
-                    editTextContrasena.setText(usuarioActual.getContrasena());
-                    editTextConfirmarContrasena.setText(usuarioActual.getContrasena());
+                    etNombre.setText(usuarioActual.getNombre());
+                    etApellidos.setText(usuarioActual.getApellidos());
+                    etEmal.setText(usuarioActual.getEmail());
+                    etPassword.setText(usuarioActual.getContrasena());
+                    etConfirmPassword.setText(usuarioActual.getContrasena());
                     resetColorCampos();
                     if (audioEnabled) {
                     }
@@ -365,11 +401,11 @@ public class RegistrerUser extends AppCompatActivity {
     }
 
     private void guardarUsuario() {
-        String nombre = editTextNombre.getText().toString().trim();
-        String apellidos = editTextApellidos.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
-        String contrasena = editTextContrasena.getText().toString();
-        String confirmarContrasena = editTextConfirmarContrasena.getText().toString();
+        String nombre = etNombre.getText().toString().trim();
+        String apellidos = etApellidos.getText().toString().trim();
+        String email = etEmal.getText().toString().trim();
+        String contrasena = etPassword.getText().toString();
+        String confirmarContrasena = etConfirmPassword.getText().toString();
         SharedPreferences prefs = getSharedPreferences("AccessibilityPrefs", Context.MODE_PRIVATE);
         boolean audioEnabled = prefs.getBoolean("audio_enabled", true);
 
@@ -391,13 +427,13 @@ public class RegistrerUser extends AppCompatActivity {
             if (audioEnabled) {
             }
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            editTextContrasena.setBackgroundResource(R.drawable.error_border);
-            editTextConfirmarContrasena.setBackgroundResource(R.drawable.error_border);
+            etPassword.setBackgroundResource(R.drawable.error_border);
+            etConfirmPassword.setBackgroundResource(R.drawable.error_border);
             SharedPreferences prefsInner = getSharedPreferences("AccessibilityPrefs", Context.MODE_PRIVATE);
             boolean highContrast = prefsInner.getBoolean("high_contrast", false);
             int defaultTextColor = highContrast ? Color.WHITE : Color.BLACK;
-            editTextContrasena.setTextColor(defaultTextColor);
-            editTextConfirmarContrasena.setTextColor(defaultTextColor);
+            etPassword.setTextColor(defaultTextColor);
+            etConfirmPassword.setTextColor(defaultTextColor);
             return;
         }
 
@@ -450,39 +486,39 @@ public class RegistrerUser extends AppCompatActivity {
 
         boolean camposValidos = true;
 
-        if (editTextNombre.getText().toString().trim().isEmpty()) {
-            editTextNombre.setBackgroundColor(Color.RED);
+        if (etNombre.getText().toString().trim().isEmpty()) {
+            etNombre.setBackgroundColor(Color.RED);
             camposValidos = false;
         } else {
-            editTextNombre.setBackgroundColor(Color.TRANSPARENT);
+            etNombre.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        if (editTextApellidos.getText().toString().trim().isEmpty()) {
-            editTextApellidos.setBackgroundColor(Color.RED);
+        if (etApellidos.getText().toString().trim().isEmpty()) {
+            etApellidos.setBackgroundColor(Color.RED);
             camposValidos = false;
         } else {
-            editTextApellidos.setBackgroundColor(Color.TRANSPARENT);
+            etApellidos.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        if (editTextEmail.getText().toString().trim().isEmpty()) {
-            editTextEmail.setBackgroundColor(Color.RED);
+        if (etEmal.getText().toString().trim().isEmpty()) {
+            etEmal.setBackgroundColor(Color.RED);
             camposValidos = false;
         } else {
-            editTextEmail.setBackgroundColor(Color.TRANSPARENT);
+            etEmal.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        if (editTextContrasena.getText().toString().isEmpty()) {
-            editTextContrasena.setBackgroundColor(Color.RED);
+        if (etPassword.getText().toString().isEmpty()) {
+            etPassword.setBackgroundColor(Color.RED);
             camposValidos = false;
         } else {
-            editTextContrasena.setBackgroundColor(Color.TRANSPARENT);
+            etPassword.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        if (editTextConfirmarContrasena.getText().toString().isEmpty()) {
-            editTextConfirmarContrasena.setBackgroundColor(Color.RED);
+        if (etConfirmPassword.getText().toString().isEmpty()) {
+            etConfirmPassword.setBackgroundColor(Color.RED);
             camposValidos = false;
         } else {
-            editTextConfirmarContrasena.setBackgroundColor(Color.TRANSPARENT);
+            etConfirmPassword.setBackgroundColor(Color.TRANSPARENT);
         }
 
         if (!camposValidos) {
@@ -492,7 +528,7 @@ public class RegistrerUser extends AppCompatActivity {
             return;
         }
 
-        String email = editTextEmail.getText().toString().trim();
+        String email = etEmal.getText().toString().trim();
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             if (audioEnabled) {
             }
@@ -500,25 +536,25 @@ public class RegistrerUser extends AppCompatActivity {
             return;
         }
 
-        if (!editTextContrasena.getText().toString().equals(editTextConfirmarContrasena.getText().toString())) {
+        if (!etPassword.getText().toString().equals(etConfirmPassword.getText().toString())) {
             if (audioEnabled) {
             }
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            editTextContrasena.setBackgroundResource(R.drawable.error_border);
-            editTextConfirmarContrasena.setBackgroundResource(R.drawable.error_border);
+            etPassword.setBackgroundResource(R.drawable.error_border);
+            etConfirmPassword.setBackgroundResource(R.drawable.error_border);
             SharedPreferences prefsInner = getSharedPreferences("AccessibilityPrefs", Context.MODE_PRIVATE);
             boolean highContrast = prefsInner.getBoolean("high_contrast", false);
             int defaultTextColor = highContrast ? Color.WHITE : Color.BLACK;
-            editTextContrasena.setTextColor(defaultTextColor);
-            editTextConfirmarContrasena.setTextColor(defaultTextColor);
+            etPassword.setTextColor(defaultTextColor);
+            etConfirmPassword.setTextColor(defaultTextColor);
             return;
         }
 
         new Thread(() -> {
-            usuarioActual.setNombre(editTextNombre.getText().toString().trim());
-            usuarioActual.setApellidos(editTextApellidos.getText().toString().trim());
-            usuarioActual.setEmail(editTextEmail.getText().toString().trim());
-            usuarioActual.setContrasena(editTextContrasena.getText().toString());
+            usuarioActual.setNombre(etNombre.getText().toString().trim());
+            usuarioActual.setApellidos(etApellidos.getText().toString().trim());
+            usuarioActual.setEmail(etEmal.getText().toString().trim());
+            usuarioActual.setContrasena(etPassword.getText().toString());
 
             db.usuarioDAO().update(usuarioActual);
 
@@ -532,22 +568,27 @@ public class RegistrerUser extends AppCompatActivity {
     }
 
     private void resetColorCampos() {
-        editTextNombre.setBackgroundColor(Color.TRANSPARENT);
-        editTextApellidos.setBackgroundColor(Color.TRANSPARENT);
-        editTextEmail.setBackgroundColor(Color.TRANSPARENT);
-        editTextContrasena.setBackgroundResource(android.R.drawable.edit_text);
-        editTextConfirmarContrasena.setBackgroundResource(android.R.drawable.edit_text);
+        etNombre.setBackgroundColor(Color.TRANSPARENT);
+        etApellidos.setBackgroundColor(Color.TRANSPARENT);
+        etEmal.setBackgroundColor(Color.TRANSPARENT);
+        etPassword.setBackgroundResource(android.R.drawable.edit_text);
+        etConfirmPassword.setBackgroundResource(android.R.drawable.edit_text);
         SharedPreferences prefs = getSharedPreferences("AccessibilityPrefs", Context.MODE_PRIVATE);
         boolean highContrast = prefs.getBoolean("high_contrast", false);
         int defaultTextColor = highContrast ? Color.WHITE : Color.BLACK;
-        editTextContrasena.setTextColor(defaultTextColor);
-        editTextConfirmarContrasena.setTextColor(defaultTextColor);
+        etPassword.setTextColor(defaultTextColor);
+        etConfirmPassword.setTextColor(defaultTextColor);
+        etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        btnTogglePassword.setImageResource(R.drawable.ojo);
+        btnToggleConfirmPassword.setImageResource(R.drawable.ojo);
+        isPasswordVisible = false;
+        isConfirmPasswordVisible = false;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        }
-
+    }
 }

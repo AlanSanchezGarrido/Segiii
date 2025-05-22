@@ -8,7 +8,7 @@
     android:background="#1976D2"
     tools:context=".UI.RegistrerUser">
 
-    <!-- Guías verticales -->
+    <!-- Guías -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -23,7 +23,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
 
-    <!-- Guía horizontal para el CardView -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_card"
         android:layout_width="wrap_content"
@@ -31,7 +30,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="60dp" />
 
-    <!-- Guía horizontal para el botón Guardar (unused but retained) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_button"
         android:layout_width="wrap_content"
@@ -39,7 +37,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.80" />
 
-    <!-- Botón de volver -->
+    <!-- Botón volver -->
     <ImageButton
         android:id="@+id/img_back"
         android:layout_width="71dp"
@@ -47,13 +45,13 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
-        android:contentDescription="Volver"
         android:scaleType="fitCenter"
         android:src="@drawable/segiconos"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Tarjeta contenedora -->
+    <!-- Tarjeta -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_container"
         android:layout_width="0dp"
@@ -80,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:text="Registro"
                 android:textAlignment="center"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
@@ -94,12 +92,13 @@
                 android:drawableStart="@drawable/user"
                 android:drawablePadding="8dp"
                 android:text="Nombre"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:tint="#FFFFFF" />
 
             <EditText
-                android:id="@+id/editTextNombre"
+                android:id="@+id/et_nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -122,12 +121,13 @@
                 android:drawableStart="@drawable/apellidouser"
                 android:drawablePadding="8dp"
                 android:text="Apellidos"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:tint="#FFFFFF" />
 
             <EditText
-                android:id="@+id/editTextApellidos"
+                android:id="@+id/et_apellido"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -150,12 +150,13 @@
                 android:drawableStart="@drawable/correo"
                 android:drawablePadding="8dp"
                 android:text="Correo"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:tint="#FFFFFF" />
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -179,19 +180,38 @@
                 android:drawableStart="@drawable/clave"
                 android:drawablePadding="8dp"
                 android:text="Contraseña"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:tint="#FFFFFF" />
 
-            <EditText
-                android:id="@+id/editTextContrasena"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="@string/txt_Contraseña"
-                android:inputType="textPassword"
-                android:padding="8dp"
-                android:textSize="14sp" />
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/txt_Contraseña"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Mostrar/Ocultar contraseña"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ojo" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -208,19 +228,38 @@
                 android:drawableStart="@drawable/llave"
                 android:drawablePadding="8dp"
                 android:text="@string/txt_confirm_contraseña"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:tint="#FFFFFF" />
 
-            <EditText
-                android:id="@+id/editTextConfirmarContrasena"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="Repite la contraseña"
-                android:inputType="textPassword"
-                android:padding="8dp"
-                android:textSize="14sp" />
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_confirpassword"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Repite la contraseña"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/btnToggleConfirmPassword"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Mostrar/Ocultar confirmar contraseña"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ojo" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -244,11 +283,11 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Botón Editar -->
+    <!-- Robot -->
     <ImageView
         android:id="@+id/robot_image"
-        android:layout_width="239dp"
-        android:layout_height="163dp"
+        android:layout_width="191dp"
+        android:layout_height="115dp"
         android:layout_marginTop="4dp"
         android:contentDescription="Robot"
         android:scaleType="fitCenter"
@@ -258,11 +297,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_container" />
 
+    <!-- Botón Editar -->
+
+    <!-- Botón Accesibilidad -->
     <ImageButton
         android:id="@+id/edit_button"
         android:layout_width="165dp"
         android:layout_height="95dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="52dp"
         android:background="@android:color/transparent"
         android:contentDescription="Editar imagen"
         android:scaleType="fitCenter"
@@ -270,18 +312,24 @@
         app:layout_constraintBottom_toBottomOf="@id/robot_image"
         app:layout_constraintStart_toEndOf="@id/robot_image"
         app:layout_constraintTop_toTopOf="@id/robot_image"
-        app:layout_constraintVertical_bias="0.411" />
+        app:layout_constraintVertical_bias="0.35" />
 
-    <!-- Botón de Accesibilidad -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_accessibility"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="640dp"
+        android:layout_marginEnd="12dp"
         android:contentDescription="Accesibilidad"
         android:src="@drawable/accessible"
-        app:backgroundTint="#FFFF00"
+        app:backgroundTint="#FFFA8D"
+        app:iconSize="36dp"
+        android:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/img_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.FullyRound" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

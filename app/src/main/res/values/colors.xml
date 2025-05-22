@@ -3,4 +3,22 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="boton">#212121</color>
+    <color name="backgroundColor">#1976D2</color> <!-- Fondo modo normal -->
+    <!-- Fondo modo normal -->
+
+    <color name="dark_gray">#FF444444</color>
+    <color name="light_gray">#FFCCCCCC</color>
+    <color name="gray">#FF888888</color>
+    <color name="primary_blue">#1976D2</color>
+    <color name="dark_background">#212121</color>
+    <color name="colorblind_red_green">#AAAAAA</color>
+    <color name="colorblind_blue_yellow">#CCCCFF</color>
+    <color name="boton1">#212121</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="protanopia_blue">#66B3FF</color>
+
+
+
+
+
 </resources>

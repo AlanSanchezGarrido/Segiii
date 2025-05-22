@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,24 +33,25 @@ public class login extends AppCompatActivity {
     private static final String TAG = "Login";
     private EditText editTextEmail, editTextPassword;
     private Button btnLogin;
-    private ImageButton imgBack;
+    private ImageButton imgBack, btnTogglePassword;
     private TextView txtOptions, txtRewrite, welcomeText, emailLabel, passwordLabel;
     private FloatingActionButton fabAccessibility;
     private ConstraintLayout mainLayout;
     private SegiDataBase db;
 
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         mainLayout = findViewById(R.id.main_layout);
         editTextEmail = findViewById(R.id.edit_email);
         editTextPassword = findViewById(R.id.edit_password);
         btnLogin = findViewById(R.id.btn_ingresar);
         imgBack = findViewById(R.id.img_back);
+        btnTogglePassword = findViewById(R.id.btnTogglePassword);
         txtOptions = findViewById(R.id.txt_options);
         txtRewrite = findViewById(R.id.txt_rewrite);
         welcomeText = findViewById(R.id.welcome_text);
@@ -58,6 +61,7 @@ public class login extends AppCompatActivity {
         db = SegiDataBase.getDatabase(this);
 
         applyAccessibilitySettings();
+        setupPasswordToggle();
 
         btnLogin.setOnClickListener(v -> loginUsuario());
 
@@ -82,8 +86,23 @@ public class login extends AppCompatActivity {
             Toast.makeText(this, "Clic en accesibilidad", Toast.LENGTH_SHORT).show();
             showAccessibilityMenu();
         });
+    }
 
+    private void setupPasswordToggle() {
+        btnTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
+    }
 
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btnTogglePassword.setImageResource(R.drawable.ojo);
+            isPasswordVisible = false;
+        } else {
+            editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            btnTogglePassword.setImageResource(R.drawable.visibilidad);
+            isPasswordVisible = true;
+        }
+        editTextPassword.setSelection(editTextPassword.getText().length());
     }
 
     private void applyAccessibilitySettings() {
@@ -108,6 +127,7 @@ public class login extends AppCompatActivity {
             editTextPassword.setHintTextColor(Color.LTGRAY);
             btnLogin.setTextColor(Color.WHITE);
             btnLogin.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.DKGRAY));
+            btnTogglePassword.setColorFilter(Color.WHITE);
         } else {
             mainLayout.setBackgroundColor(Color.parseColor("#1976D2"));
             welcomeText.setTextColor(Color.BLACK);
@@ -121,6 +141,7 @@ public class login extends AppCompatActivity {
             editTextPassword.setHintTextColor(Color.GRAY);
             btnLogin.setTextColor(Color.WHITE);
             btnLogin.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#212121")));
+            btnTogglePassword.setColorFilter(Color.BLACK);
         }
 
         if ("red_green".equals(colorblindFilter)) {
@@ -254,11 +275,13 @@ public class login extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("AccessibilityPrefs", Context.MODE_PRIVATE);
         boolean audioEnabled = prefs.getBoolean("audio_enabled", true);
 
-        editTextEmail.setBackgroundResource(android.R.drawable.edit_text);
-        editTextPassword.setBackgroundResource(android.R.drawable.edit_text);
+        // Restablecer a sin fondo
+        editTextEmail.setBackground(null);
+        editTextPassword.setBackground(null);
 
         if (email.isEmpty() || password.isEmpty()) {
             if (audioEnabled) {
+                // Add audio feedback if needed
             }
             Toast.makeText(this, "Por favor llena todos los campos", Toast.LENGTH_SHORT).show();
             if (email.isEmpty()) editTextEmail.setBackgroundResource(R.drawable.error_border);
@@ -268,6 +291,7 @@ public class login extends AppCompatActivity {
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             if (audioEnabled) {
+                // Add audio feedback if needed
             }
             Toast.makeText(this, "Correo electrónico inválido", Toast.LENGTH_SHORT).show();
             editTextEmail.setBackgroundResource(R.drawable.error_border);
@@ -279,6 +303,7 @@ public class login extends AppCompatActivity {
             runOnUiThread(() -> {
                 if (usuario != null && usuario.getContrasena().equals(password)) {
                     if (audioEnabled) {
+                        // Add audio feedback if needed
                     }
                     Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -288,6 +313,7 @@ public class login extends AppCompatActivity {
                     }, 2000);
                 } else {
                     if (audioEnabled) {
+                        // Add audio feedback if needed
                     }
                     Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                     editTextEmail.setBackgroundResource(R.drawable.error_border);
@@ -300,6 +326,33 @@ public class login extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
 
+    // Clase interna para manejar audios
+    private static class AudioHelper {
+        private final Context context;
+        private MediaPlayer mediaPlayer;
+
+        public AudioHelper(Context context) {
+            this.context = context;
+        }
+
+        public void playAudio(int resId) {
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+            }
+            mediaPlayer = MediaPlayer.create(context, resId);
+            if (mediaPlayer != null) {
+                mediaPlayer.setOnCompletionListener(mp -> mp.release());
+                mediaPlayer.start();
+            }
+        }
+
+        public void release() {
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+        }
     }
 }
