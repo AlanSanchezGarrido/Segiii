@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!--
+<!--
     <TextView
         android:id="@+id/userTextView"
         android:layout_width="match_parent"
@@ -29,5 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Agregar 2 usuario" />
-    -->
+  -->
+
 </LinearLayout>

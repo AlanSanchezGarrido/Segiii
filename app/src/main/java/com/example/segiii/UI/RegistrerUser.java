@@ -554,15 +554,14 @@ public class RegistrerUser extends VoiceNavigationActivity {
                 Usuario nuevoUsuario = new Usuario();
                 nuevoUsuario.setNombre(nombre);
                 nuevoUsuario.setApellidos(apellidos);
-                nuevoUsuario.setUsuario(correo);
+                nuevoUsuario.setCorreo(correo);
                 nuevoUsuario.setContrasena(contrasena);
-                nuevoUsuario.setId_sistema(1);
+
 
                 List<SistemaNavegacion> sistemas = segiDataBase.sistemaNavegacionDAO().getallSistemaNavegacion();
                 if (sistemas.isEmpty()) {
                     SistemaNavegacion sistema = new SistemaNavegacion();
                     sistema.setNivel_detalle("Básico");
-                    sistema.setId_proveedor(1);
                     segiDataBase.sistemaNavegacionDAO().insert(sistema);
                 }
 

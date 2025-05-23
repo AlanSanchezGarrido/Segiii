@@ -22,6 +22,8 @@ public interface UbicacionDAO {
     List<Ubicacion>getallUbicaciones();
     @Query("SELECT * FROM Ubicacion WHERE id_ubicacion = :id")
     Ubicacion getUbicacionesById(long id);
+    @Query("SELECT * FROM Ubicacion WHERE placeid = :id_place")
+    Ubicacion getUbicacionByPlaceId(String id_place);
     @Query("SELECT * FROM ubicacion WHERE nombre = :nombreUbicacion ")
     Ubicacion getUbicacionByNombre(String nombreUbicacion);
 }

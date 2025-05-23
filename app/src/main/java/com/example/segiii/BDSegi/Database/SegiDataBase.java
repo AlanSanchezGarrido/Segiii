@@ -35,7 +35,7 @@ import com.example.segiii.BDSegi.Entitys.UsuarioContacto;
         Ubicacion.class,
         SistemaEmergencia.class,
         RutasFrecuentes.class
-}, version = 1, exportSchema = false)
+}, version = 3, exportSchema = false)
 public abstract class SegiDataBase extends RoomDatabase {
     public abstract UsuarioDAO usuarioDAO();
     public abstract SistemaNavegacionDAO sistemaNavegacionDAO();

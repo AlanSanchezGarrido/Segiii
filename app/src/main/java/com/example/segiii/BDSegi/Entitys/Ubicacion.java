@@ -5,19 +5,24 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Ubicacion",
-        foreignKeys = @ForeignKey(entity = SistemaNavegacion.class,
-        parentColumns = "id_sistema",
-        childColumns = "id_sistema",
-        onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "Ubicacion")
 public class Ubicacion {
     @PrimaryKey(autoGenerate = true)
     public long id_ubicacion;
 
+    public String placeid;
+
     public String nombre;
     public double latitud;
     public double longitud;
-    public long id_sistema;
+
+    public String getPlaceid() {
+        return placeid;
+    }
+
+    public void setPlaceid(String placeid) {
+        this.placeid = placeid;
+    }
 
     public String getNombre() {
         return nombre;
@@ -50,11 +55,4 @@ public class Ubicacion {
         this.longitud = longitud;
     }
 
-    public long getId_sistema() {
-        return id_sistema;
-    }
-
-    public void setId_sistema(long id_sistema) {
-        this.id_sistema = id_sistema;
-    }
 }

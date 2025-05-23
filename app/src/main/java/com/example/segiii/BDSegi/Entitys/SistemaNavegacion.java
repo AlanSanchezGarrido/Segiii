@@ -10,7 +10,7 @@ public class SistemaNavegacion {
     public long id_sistema;
 
     public String nivel_detalle;
-    public long id_proveedor;
+
 
     public long getId_sistema() {
         return id_sistema;
@@ -28,11 +28,4 @@ public class SistemaNavegacion {
         this.nivel_detalle = nivel_detalle;
     }
 
-    public long getId_proveedor() {
-        return id_proveedor;
-    }
-
-    public void setId_proveedor(long id_proveedor) {
-        this.id_proveedor = id_proveedor;
-    }
 }

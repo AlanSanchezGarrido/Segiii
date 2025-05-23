@@ -22,6 +22,5 @@ public interface RutaDAO {
     List<Ruta> getallRutas();
     @Query("SELECT * FROM Ruta WHERE id_ruta = :id")
     Ruta getRutaById (long id);
-    @Query("SELECT * FROM Ruta WHERE id_sistema = :sistemaid")
-    List<Ruta>getRutasBysistemaId (long sistemaid);
+
 }

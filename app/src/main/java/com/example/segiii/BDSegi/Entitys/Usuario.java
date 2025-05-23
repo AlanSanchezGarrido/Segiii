@@ -5,20 +5,16 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Usuario",
-       foreignKeys = @ForeignKey(entity = SistemaNavegacion.class,
-       parentColumns = "id_sistema",
-       childColumns = "id_sistema",
-       onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "Usuario")
 public class Usuario {
     @PrimaryKey (autoGenerate = true)
     public long id_usuario;
 
     public String nombre;
     public String apellidos;
-    public String usuario;
+    public String correo;
     public String contrasena;
-    public long id_sistema;
+
 
     public long getId_usuario() {
         return id_usuario;
@@ -44,12 +40,12 @@ public class Usuario {
         this.apellidos = apellidos;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
     public String getContrasena() {
@@ -58,13 +54,5 @@ public class Usuario {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
-    }
-
-    public long getId_sistema() {
-        return id_sistema;
-    }
-
-    public void setId_sistema(long id_sistema) {
-        this.id_sistema = id_sistema;
     }
 }

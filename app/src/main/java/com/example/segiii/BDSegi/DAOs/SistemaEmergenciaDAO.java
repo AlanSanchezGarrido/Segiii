@@ -22,8 +22,5 @@ public interface SistemaEmergenciaDAO {
     List<SistemaEmergencia>getallsistemasEmergencia();
     @Query("SELECT * FROM Sistema_emergencia WHERE id_sistema_emergencia = :id")
     SistemaEmergencia getSistemasEmergenciaById (long id);
-    @Query("SELECT * FROM Sistema_emergencia WHERE id_sistema = :idSistema")
-    List<SistemaEmergencia> getSistemasEmergenciaByIdSistema (long idSistema);
-    @Query("SELECT * FROM Sistema_emergencia WHERE id_ubicacion = :idUbicacion")
-    List<SistemaEmergencia> getSistemasEmergenciaByIdUbicacion (long idUbicacion);
+
 }

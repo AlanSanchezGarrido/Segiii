@@ -23,10 +23,8 @@ public interface UsuarioDAO {
     List <Usuario> getAllUsuarios();
     @Query("SELECT * FROM Usuario WHERE id_usuario = :id")
     Usuario getUsuarioById (long id);
-    @Query("SELECT * FROM Usuario WHERE usuario = :username")
-    Usuario getUsuarioByUsername(String username);
 
-
-
+    @Query("SELECT * FROM Usuario WHERE correo = :correo and contrasena = :contrasenha")
+    Usuario getUsuarioByEmailAndPassword (String correo, String contrasenha);
 
 }

@@ -24,12 +24,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    /*
+/*
     private TextView userTextView;
     private Button loadUserButton;
     private Button addUsersButton;
     private SegiDataBase db;
-    */
+
+ */
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    /*
+/*
         userTextView = findViewById(R.id.userTextView);
         loadUserButton = findViewById(R.id.loadUserButton);
         addUsersButton = findViewById(R.id.addUsersButton);
@@ -49,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
         addUsersButton.setOnClickListener(v -> addTwoUsers());
 
-    */
+ */
+
+
 
     }
 
-    /*
+/*
     private void loadUser(long userId) {
         // Run database operation on a background thread
         new Thread(() -> {
@@ -67,9 +71,8 @@ public class MainActivity extends AppCompatActivity {
                     String userDetails = "ID: " + usuario.getId_usuario() +
                             "Nombre: " + usuario.getNombre() +
                             "Apellidos: " + usuario.getApellidos() +
-                            "Usuario: " + usuario.getUsuario() +
-                            "Contraseña: " + usuario.getContrasena() +
-                            "Sistema ID: " + usuario.getId_sistema();
+                            "Correo: " + usuario.getCorreo() +
+                            "Contraseña: " + usuario.getContrasena();
                     userTextView.setText(userDetails);
                 } else {
                     userTextView.setText("User not found!");
@@ -82,33 +85,22 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 // Step 1: Ensure a SistemaNavegacion exists (required due to foreign key)
-                long sistemaId;
-                List<SistemaNavegacion> sistemas = db.sistemaNavegacionDAO().getallSistemaNavegacion();
-                if (sistemas.isEmpty()) {
-                    SistemaNavegacion sistema = new SistemaNavegacion();
-                    sistema.setNivel_detalle("Básico");
-                    sistema.setId_proveedor(1);
-                    db.sistemaNavegacionDAO().insert(sistema);
-                    // Fetch the inserted sistema to get its ID
-                    sistemaId = db.sistemaNavegacionDAO().getallSistemaNavegacion().get(0).getId_sistema();
-                } else {
-                    sistemaId = sistemas.get(0).getId_sistema();
-                }
+
 
                 // Step 2: Create and insert two users
                 Usuario usuario1 = new Usuario();
                 usuario1.setNombre("Ana");
                 usuario1.setApellidos("Gómez");
-                usuario1.setUsuario("anagomez");
+                usuario1.setCorreo("francisco@Gmail.com");
                 usuario1.setContrasena("password123");
-                usuario1.setId_sistema(sistemaId);
+
 
                 Usuario usuario2 = new Usuario();
                 usuario2.setNombre("Carlos");
                 usuario2.setApellidos("López");
-                usuario2.setUsuario("carloslopez");
+                usuario2.setCorreo("francisco@Gmail.com");
                 usuario2.setContrasena("secure456");
-                usuario2.setId_sistema(sistemaId);
+
 
                 // Insert users into the database
                 db.usuarioDAO().insert(usuario1);
@@ -126,5 +118,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-     */
+ */
+
+
 }

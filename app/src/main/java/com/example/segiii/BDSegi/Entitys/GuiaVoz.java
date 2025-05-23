@@ -4,19 +4,14 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Guia_voz",
-        foreignKeys = @ForeignKey(entity = Usuario.class,
-        parentColumns = "id_usuario",
-        childColumns = "id_usuario",
-        onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "Guia_voz")
 public class GuiaVoz {
     @PrimaryKey(autoGenerate = true)
     public long id_guia;
-
     public int volumen;
     public int velocidad;
     public String comando_voz;
-    public long id_usuario;
+
 
     public long getId_guia() {
         return id_guia;
@@ -50,11 +45,4 @@ public class GuiaVoz {
         this.comando_voz = comando_voz;
     }
 
-    public long getId_usuario() {
-        return id_usuario;
-    }
-
-    public void setId_usuario(long id_usuario) {
-        this.id_usuario = id_usuario;
-    }
 }

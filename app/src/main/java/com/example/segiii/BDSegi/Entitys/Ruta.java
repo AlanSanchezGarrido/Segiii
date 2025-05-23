@@ -5,11 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity (tableName = "Ruta",
-         foreignKeys = @ForeignKey(entity = SistemaNavegacion.class,
-         parentColumns = "id_sistema",
-         childColumns = "id_sistema",
-         onDelete = ForeignKey.CASCADE))
+@Entity (tableName = "Ruta")
 public class Ruta {
     @PrimaryKey(autoGenerate = true)
     public long id_ruta;
@@ -18,7 +14,7 @@ public class Ruta {
     public String destino;
     public double distancia;
     public int tiempo_estimado;
-    public long id_sistema;
+
 
     public long getId_ruta() {
         return id_ruta;
@@ -60,11 +56,4 @@ public class Ruta {
         this.tiempo_estimado = tiempo_estimado;
     }
 
-    public long getId_sistema() {
-        return id_sistema;
-    }
-
-    public void setId_sistema(long id_sistema) {
-        this.id_sistema = id_sistema;
-    }
 }

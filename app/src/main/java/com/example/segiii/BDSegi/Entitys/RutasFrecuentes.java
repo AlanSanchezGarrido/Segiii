@@ -3,21 +3,23 @@ package com.example.segiii.BDSegi.Entitys;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Rutas_Frecuentes",
-        primaryKeys = {"id_usuario", "id_ruta"},
-        foreignKeys = {@ForeignKey(entity = Usuario.class,
-                       parentColumns = "id_usuario",
-                       childColumns = "id_usuario",
-                       onDelete = ForeignKey.CASCADE),
-                       @ForeignKey(entity = Ruta.class,
-                       parentColumns = "id_ruta",
-                       childColumns = "id_ruta",
-                       onDelete = ForeignKey.CASCADE)})
+@Entity(tableName = "Rutas_Frecuentes")
 public class RutasFrecuentes {
+    @PrimaryKey(autoGenerate = true)
+    public long id_rutasfrecuentes;
     public long id_usuario;
     public long id_ruta;
     public int frecuencia;
+
+    public long getId_rutasfrecuentes() {
+        return id_rutasfrecuentes;
+    }
+
+    public void setId_rutasfrecuentes(long id_rutasfrecuentes) {
+        this.id_rutasfrecuentes = id_rutasfrecuentes;
+    }
 
     public long getId_usuario() {
         return id_usuario;

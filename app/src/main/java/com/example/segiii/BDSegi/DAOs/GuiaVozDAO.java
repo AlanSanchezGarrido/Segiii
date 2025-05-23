@@ -22,6 +22,5 @@ public interface GuiaVozDAO {
     List<GuiaVoz> getallGuiavoz();
     @Query("SELECT * FROM Guia_voz WHERE id_guia = :id")
     GuiaVoz getGuiavozById (long id);
-    @Query("SELECT * FROM Guia_voz WHERE id_usuario = :usuarioid")
-    List<GuiaVoz> getGuiavozByusuarioId(long usuarioid);
+
 }
