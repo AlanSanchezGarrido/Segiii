@@ -38,20 +38,24 @@
         app:layout_constraintGuide_percent="0.80" />
 
     <!-- Botón volver -->
+
+    <!-- Tarjeta -->
+
     <ImageButton
         android:id="@+id/img_back"
         android:layout_width="71dp"
         android:layout_height="58dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:src="@drawable/segiconos"
 
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.01" />
 
-    <!-- Tarjeta -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_container"
         android:layout_width="0dp"
