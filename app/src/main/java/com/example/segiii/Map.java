@@ -47,11 +47,11 @@ SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         if (mMap == null) return; // Sale si el mapa no está inicializado
 
             // Centra la cámara en la ubicación con un nivel de zoom de 15
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16f));
             // Agrega un marcador en la ubicación
-            mMap.addMarker(new MarkerOptions()
-                    .position(location)
-                    .title(isUserLocation ? "¡Estás aquí!" : "Destino"));
+//            mMap.addMarker(new MarkerOptions()
+//                    .position(location)
+//                    .title(isUserLocation ? "¡Estás aquí!" : "Destino"));
         }
     }
 

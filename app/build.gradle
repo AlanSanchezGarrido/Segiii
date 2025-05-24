@@ -42,8 +42,13 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     // Google Maps y Location
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    //implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
+
+    //Mapas y navegacion
+    implementation 'com.google.android.libraries.navigation:navigation:6.2.2'
+    //Peticiones HTTP y JSON
+    implementation 'com.android.volley:volley:1.2.1'
 
     implementation 'com.google.cloud:google-cloud-dialogflow:2.1.0'
     implementation 'io.grpc:grpc-okhttp:1.39.0'

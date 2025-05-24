@@ -11,12 +11,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,9 +30,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.segiii.BDSegi.Database.SegiDataBase;
+import com.example.segiii.BDSegi.Entitys.Ubicacion;
+import com.example.segiii.BDSegi.Entitys.Usuario;
 import com.example.segiii.Location;
 import com.example.segiii.Map;
+import com.example.segiii.NavigationMap;
 import com.example.segiii.R;
+import com.example.segiii.navigation.Geocode;
+import com.example.segiii.navigation.Navigation;
 import com.example.segiii.vozSegi.ComandoPrincipal.SpeedRecognizer;
 import com.example.segiii.vozSegi.ComandoPrincipal.VoiceNavigationActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,16 +47,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback {
+public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback, GoogleMap.OnPoiClickListener, GoogleMap.OnMarkerClickListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MapaUI";
     private Map mMap;
     private Location locationn;
     private GoogleMap googleMap;
+    private MarkerUI markerUI;
     private FusedLocationProviderClient fusedLocationClient;
     private boolean isNavigating = false;
     private ImageView splashOverlay;
@@ -54,6 +68,7 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
     private FloatingActionButton fabCenterLocation, fab_user, fabAyuda, fabSave;
     private LinearLayout miniWindow;
     private SegiDataBase db;
+    private EditText etDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +86,21 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         locationn = new Location(this);
         mMap = new Map(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        etDestination = findViewById(R.id.edit_destination);
+        etDestination.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        actionId == EditorInfo.IME_NULL &&
+                                event != null && event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    // ¡Se presionó Enter! Haz tu magia aquí.
+                    searchAndNavigate(etDestination.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Inicializar vistas
         splashOverlay = findViewById(R.id.splash_overlay);
@@ -82,7 +112,8 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
 
         // Verificar vistas
         if (splashOverlay == null) Log.e(TAG, "splashOverlay is null - check layout XML");
-        else Log.d(TAG, "splashOverlay initialized, visibility: " + (splashOverlay.getVisibility() == View.VISIBLE ? "VISIBLE" : "NOT VISIBLE"));
+        else
+            Log.d(TAG, "splashOverlay initialized, visibility: " + (splashOverlay.getVisibility() == View.VISIBLE ? "VISIBLE" : "NOT VISIBLE"));
         if (fabCenterLocation == null) Log.e(TAG, "fabCenterLocation is null - check layout XML");
         if (fab_user == null) Log.e(TAG, "fab_user is null - check layout XML");
         if (fabAyuda == null) Log.e(TAG, "fabAyuda is null - check layout XML");
@@ -135,26 +166,11 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         if (fabSave != null) {
             fabSave.setOnClickListener(v -> {
                 Log.d(TAG, "Save FAB clicked");
-                if (miniWindow != null) {
-                    miniWindow.setVisibility(View.VISIBLE);
-                } else {
-                    Log.e(TAG, "miniWindow is null when trying to show");
-                }
+                mostrarMiniVentana();
+                guardarConMiniVentana(locationn.getCurrentLocation());
             });
         }
 
-        // Configurar botón de cancelar (X) para cerrar la mini-ventana
-        if (miniWindow != null) {
-            MaterialButton btnCancel = miniWindow.findViewById(R.id.btn_cancel);
-            if (btnCancel != null) {
-                btnCancel.setOnClickListener(v -> {
-                    Log.d(TAG, "Cancel button clicked");
-                    miniWindow.setVisibility(View.GONE);
-                });
-            } else {
-                Log.e(TAG, "btnCancel is null - check layout");
-            }
-        }
 
         // Configurar mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.Map);
@@ -295,6 +311,10 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.d(TAG, "Map ready");
+        googleMap.setOnMarkerClickListener(this);
+        googleMap.setOnPoiClickListener(this);
+        markerUI = new MarkerUI(this, googleMap);
+        markerUI.printMarkers();
         this.googleMap = googleMap;
         mMap.initializeMap(googleMap);
         if (checkLocationPermission()) {
@@ -446,5 +466,109 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
             handler.removeCallbacks(splashRunnable);
             Log.d(TAG, "Handler callbacks removed");
         }
+    }
+
+
+    @Override
+    public void onPoiClick(PointOfInterest pointOfInterest) {
+        guardarConMiniVentana(pointOfInterest.placeId,pointOfInterest.latLng);
+        //markerUI.savePlace(pointOfInterest.placeId, pointOfInterest.name, pointOfInterest.latLng);
+    }
+
+    private void navigateByLatLng(LatLng position) {
+        Intent intent = new Intent(getApplicationContext(), NavigationMap.class);
+        intent.putExtra("lat", position.latitude);
+        intent.putExtra("lng", position.longitude);
+        startActivity(intent);
+    }
+
+    private void navigateByPlaceId(String placeId) {
+        Intent intent = new Intent(getApplicationContext(), NavigationMap.class);
+        intent.putExtra("place_id", placeId);
+        startActivity(intent);
+    }
+
+    private void navigateByName(String destination) {
+        Geocode.navigateTo(destination, this);
+    }
+
+    private void searchAndNavigate(String name) {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        new Thread(() -> {
+            try {
+                final Ubicacion datoObtenido = db.ubicacionDAO().getUbicacionByNombre(name);
+                mainHandler.post(() -> {
+                    if (datoObtenido != null) {
+                        LatLng latLng = new LatLng(datoObtenido.getLatitud(), datoObtenido.getLongitud());
+                        navigateByLatLng(latLng);
+                    } else {
+                        navigateByName(name);
+                    }
+                });
+            } catch (Exception e) {
+                mainHandler.post(() -> {
+                    // Maneja error UI...
+                });
+            }
+        }).start();
+    }
+
+
+    private void mostrarMiniVentana() {
+        if (miniWindow != null) {
+            miniWindow.setVisibility(View.VISIBLE);
+        } else {
+            Log.e(TAG, "MiniWindow are null");
+        }
+    }
+
+    private void guardarConMiniVentana(String placeId, LatLng ubi) {
+        if (miniWindow != null) {
+            MaterialButton btnCancel = miniWindow.findViewById(R.id.btn_cancel);
+            MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
+            EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
+            if (btnCancel != null && btnOK != null && etPlaceName != null) {
+                btnCancel.setOnClickListener(v -> {
+                    Log.d(TAG, "Cancel button clicked");
+                    miniWindow.setVisibility(View.GONE);
+                });
+                btnOK.setOnClickListener(v -> {
+                    markerUI.savePlace(placeId, etPlaceName.getText().toString(), ubi);
+                    miniWindow.setVisibility(View.GONE);
+                });
+            } else {
+                Log.e(TAG, "MiniWindow buttons are null");
+            }
+        } else {
+            Log.e(TAG, "MiniWindow are null");
+        }
+    }
+
+    private void guardarConMiniVentana(LatLng latLng) {
+        if (miniWindow != null) {
+            MaterialButton btnCancel = miniWindow.findViewById(R.id.btn_cancel);
+            MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
+            EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
+            if (btnCancel != null && btnOK != null && etPlaceName != null) {
+                btnCancel.setOnClickListener(v -> {
+                    Log.d(TAG, "Cancel button clicked");
+                    miniWindow.setVisibility(View.GONE);
+                });
+                btnOK.setOnClickListener(v -> {
+                    markerUI.savePlace(etPlaceName.getText().toString(), latLng);
+                    miniWindow.setVisibility(View.GONE);
+                });
+            } else {
+                Log.e(TAG, "MiniWindow buttons are null");
+            }
+        } else {
+            Log.e(TAG, "MiniWindow are null");
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        markerUI.deleteMarker(marker.getTitle());
+        return true;
     }
 }

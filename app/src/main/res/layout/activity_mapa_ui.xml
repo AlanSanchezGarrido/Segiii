@@ -23,6 +23,8 @@
         android:id="@+id/edit_destination"
         android:layout_width="350dp"
         android:layout_height="55dp"
+        android:inputType="text"
+        android:imeOptions="actionDone"
         android:layout_marginStart="8dp"
         android:background="@drawable/rounded_edittext"
         android:drawableStart="@drawable/localizacion"
