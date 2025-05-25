@@ -51,8 +51,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textview.MaterialTextView;
 
-public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback, GoogleMap.OnPoiClickListener, GoogleMap.OnMarkerClickListener {
+public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback, GoogleMap.OnPoiClickListener
+        , GoogleMap.OnMarkerClickListener
+{
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MapaUI";
@@ -165,8 +168,6 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         // Configurar FAB para mostrar la mini-ventana
         if (fabSave != null) {
             fabSave.setOnClickListener(v -> {
-                Log.d(TAG, "Save FAB clicked");
-                mostrarMiniVentana();
                 guardarConMiniVentana(locationn.getCurrentLocation());
             });
         }
@@ -184,6 +185,8 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         // Registra comandos específicos del mapa
         registerMapSpecificCommands();
     }
+
+
 
     /**
      * Registra comandos específicos para la pantalla del mapa
@@ -471,7 +474,7 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
 
     @Override
     public void onPoiClick(PointOfInterest pointOfInterest) {
-        guardarConMiniVentana(pointOfInterest.placeId,pointOfInterest.latLng);
+        guardarConMiniVentana(pointOfInterest.placeId,pointOfInterest.name,pointOfInterest.latLng);
         //markerUI.savePlace(pointOfInterest.placeId, pointOfInterest.name, pointOfInterest.latLng);
     }
 
@@ -522,12 +525,16 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         }
     }
 
-    private void guardarConMiniVentana(String placeId, LatLng ubi) {
+    private void guardarConMiniVentana(String placeId,String placeName, LatLng ubi) {
         if (miniWindow != null) {
+            mostrarMiniVentana();
             MaterialButton btnCancel = miniWindow.findViewById(R.id.btn_cancel);
             MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
             EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
-            if (btnCancel != null && btnOK != null && etPlaceName != null) {
+            TextView etWindowTitle = miniWindow.findViewById(R.id.mw_tv_title);
+            if(btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null){
+                etWindowTitle.setText("UBICACION");
+                etPlaceName.setText(placeName);
                 btnCancel.setOnClickListener(v -> {
                     Log.d(TAG, "Cancel button clicked");
                     miniWindow.setVisibility(View.GONE);
@@ -546,16 +553,22 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
 
     private void guardarConMiniVentana(LatLng latLng) {
         if (miniWindow != null) {
+            mostrarMiniVentana();
             MaterialButton btnCancel = miniWindow.findViewById(R.id.btn_cancel);
             MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
             EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
-            if (btnCancel != null && btnOK != null && etPlaceName != null) {
+            TextView etWindowTitle = miniWindow.findViewById(R.id.mw_tv_title);
+            if(btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null){
+                etWindowTitle.setText("UBICACION");
+                etPlaceName.setText(null);
                 btnCancel.setOnClickListener(v -> {
                     Log.d(TAG, "Cancel button clicked");
                     miniWindow.setVisibility(View.GONE);
                 });
                 btnOK.setOnClickListener(v -> {
+                    Log.d(TAG, "OK press");
                     markerUI.savePlace(etPlaceName.getText().toString(), latLng);
+                    //markerUI.deleteAll();
                     miniWindow.setVisibility(View.GONE);
                 });
             } else {
@@ -566,9 +579,36 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         }
     }
 
+    private void eliminarConMiniVentana(String placeName) {
+        if (miniWindow != null) {
+            mostrarMiniVentana();
+            MaterialButton btnCancel = miniWindow.findViewById(R.id.btn_cancel);
+            MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
+            EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
+            TextView etWindowTitle = miniWindow.findViewById(R.id.mw_tv_title);
+            if(btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null){
+                etWindowTitle.setText("¿ELIMINAR?");
+                etPlaceName.setText(placeName);
+                btnCancel.setOnClickListener(v -> {
+                    miniWindow.setVisibility(View.GONE);
+                });
+                btnOK.setOnClickListener(v -> {
+                    markerUI.deleteUbication(placeName);
+                    //markerUI.deleteAll();
+                    miniWindow.setVisibility(View.GONE);
+                });
+            } else {
+                Log.e(TAG, "MiniWindow components are null");
+            }
+        } else {
+            Log.e(TAG, "MiniWindow are null");
+        }
+    }
+
     @Override
     public boolean onMarkerClick(Marker marker) {
-        markerUI.deleteMarker(marker.getTitle());
+        //markerUI.deleteMarker(marker.getTitle());
+        eliminarConMiniVentana(marker.getTitle());
         return true;
     }
 }

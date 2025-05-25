@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.segiii.BDSegi.DAOs.UbicacionDAO;
@@ -38,45 +39,21 @@ public class MarkerUI {
         db = SegiDataBase.getDatabase(activity.getApplicationContext());
     }
 
-    public void deleteMarker(String placeName){
-        deleteMarker(placeName,"");
-    }
-
-    public void deleteMarker(String placeName, String placeId){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Ubicacion ubicacion = new Ubicacion();
-                ubicacion.setNombre(placeName);
-                ubicacion.setPlaceid(placeId);
-                ubicacion.setLatitud(0);
-                ubicacion.setLongitud(0);
-                db.ubicacionDAO().delete(ubicacion);
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(activity, "Ubicación eliminada", Toast.LENGTH_SHORT).show();
-                        printMarkers();
-                    }
-                });
-            }
-        });
-    }
-
-    public void savePlace(String placeName, LatLng coordinates){
-        savePlace("Not Place Id",placeName,coordinates);
+    public void savePlace(String placeName, LatLng coordinates) {
+        savePlace("Not Place Id", placeName, coordinates);
     }
 
     public void savePlace(String placeId, String placeName, LatLng coordinates) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.d("MarkerUI: ", "savePlace entro");
                 Ubicacion ubicacion = new Ubicacion();
 
-                Ubicacion temp = db.ubicacionDAO().getUbicacionByNombre(placeName);
+                Ubicacion temp = db.ubicacionDAO().getUbicacionByNombre(placeName.toLowerCase());
                 if (temp == null) {
                     ubicacion.setPlaceid(placeId);
-                    ubicacion.setNombre(placeName);
+                    ubicacion.setNombre(placeName.toLowerCase());
                     ubicacion.setLatitud(coordinates.latitude);
                     ubicacion.setLongitud(coordinates.longitude);
 
@@ -100,6 +77,7 @@ public class MarkerUI {
             @Override
             public void run() {
                 List<Ubicacion> ubicacions = db.ubicacionDAO().getallUbicaciones();
+                Log.d("MarkerUI: ", "print entro: " + ubicacions.size());
                 markerOptions.clear();
                 LatLng coordinates;
                 for (Ubicacion ubi : ubicacions) {
@@ -121,12 +99,55 @@ public class MarkerUI {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if(!markers.isEmpty()){
+                            clearMarkers();
+                        }
                         for (MarkerOptions markerOption : markerOptions) {
                             markers.add(googleMap.addMarker(markerOption));
                         }
                     }
                 });
 
+            }
+        }).start();
+    }
+
+    private void clearMarkers(){
+        for(Marker m : markers){
+            m.remove();
+        }
+    }
+
+    public void deleteAll(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("MarkerUI: ", "deleteAll entro");
+                for(Ubicacion ubi : db.ubicacionDAO().getallUbicaciones()){
+                    db.ubicacionDAO().delete(ubi);
+                }
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        printMarkers();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void deleteUbication(String placeName){
+        new Thread(() -> {
+            Log.d("MarkerUI","deleteUbicacion");
+            Ubicacion ubicacion = db.ubicacionDAO().getUbicacionByNombre(placeName.toLowerCase());
+            if(ubicacion != null){
+                db.ubicacionDAO().delete(ubicacion);
+                activity.runOnUiThread(() -> {
+                    Toast.makeText(activity.getApplicationContext(), "Ubicación Eliminada", Toast.LENGTH_SHORT).show();
+                    printMarkers();
+                });
+            }else{
+                Log.d("MarkerUI","ubicacion no encontrada");
             }
         }).start();
     }

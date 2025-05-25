@@ -31,6 +31,7 @@ SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
 
 
     }
@@ -48,6 +49,7 @@ SupportMapFragment mapFragment = SupportMapFragment.newInstance();
 
             // Centra la cámara en la ubicación con un nivel de zoom de 15
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16f));
+            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 838868));
             // Agrega un marcador en la ubicación
 //            mMap.addMarker(new MarkerOptions()
 //                    .position(location)
