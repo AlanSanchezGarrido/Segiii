@@ -54,13 +54,12 @@ public abstract class SegiDataBase extends RoomDatabase {
             synchronized (SegiDataBase.class){
                 if (INSTANCE == null){
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            SegiDataBase.class, "segi_database").build();
+                                    SegiDataBase.class, "segi_database")
+                            .fallbackToDestructiveMigration() // Esto permite que Room elimine y recree la BD
+                            .build();
                 }
             }
-
         }
         return INSTANCE;
     }
-
-
 }

@@ -653,6 +653,7 @@ public class RegistrerUser extends VoiceNavigationActivity {
         }
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

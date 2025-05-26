@@ -40,9 +40,8 @@ public class SpeedRecognizer {
     public interface OnVoiceCommandListener {
         void onCommandProcessed(String command, String result);
         void onError(String errorMessage);
-        // Nuevo método para notificar cuando el reconocimiento se cancela manualmente
         void onRecognitionCancelled();
-        // Nuevo método para manejar comandos de navegación
+        // Método actualizado para pasar el destino extraído
         void onNavigationCommand(String destination);
     }
 
@@ -149,7 +148,6 @@ public class SpeedRecognizer {
                 ((AppCompatActivity) context).finishAffinity();
             }
         });
-
     }
 
     // Método para agregar comandos personalizados para casos específicos
@@ -287,37 +285,43 @@ public class SpeedRecognizer {
 
     // Método para extraer el destino de comandos de navegación
     private String extractDestination(String commandText) {
+        if (commandText == null) return null;
         String lowerText = commandText.toLowerCase().trim();
 
         // Patrones de comandos de navegación
         String[] navigationPatterns = {
-                "navega a ",
-                "navegue a ",
-                "llévame a ",
-                "llevame a ",
-                "dirígeme a ",
-                "dirigeme a ",
-                "ir a ",
-                "ve a ",
-                "vamos a ",
-                "quiero ir a ",
-                "necesito ir a ",
-                "buscar ",
-                "busca ",
-                "encuentra ",
-                "localizar ",
-                "localiza "
+                "navega a",
+                "navegue a",
+                "llévame a",
+                "llevame a",
+                "dirígeme a",
+                "dirigeme a",
+                "ir a",
+                "ve a",
+                "vamos a",
+                "quiero ir a",
+                "necesito ir a",
+                "buscar",
+                "busca",
+                "encuentra",
+                "localizar",
+                "localiza"
         };
 
         for (String pattern : navigationPatterns) {
             if (lowerText.startsWith(pattern)) {
+                // Extrae el texto después del patrón
                 String destination = lowerText.substring(pattern.length()).trim();
+                // Si el destino empieza con "a " (por error en el patrón) lo quitamos
+                if (destination.startsWith("a ")) {
+                    destination = destination.substring(2).trim();
+                }
+                // Solo destino, nunca vacío ni el comando
                 if (!destination.isEmpty()) {
                     return destination;
                 }
             }
         }
-
         return null;
     }
 
@@ -334,7 +338,7 @@ public class SpeedRecognizer {
         if (destination != null) {
             resultado = "navegando a: " + destination;
             listener.onCommandProcessed(commandText, resultado);
-            // Llamar al nuevo método de la interfaz para comandos de navegación
+            // Pasar el destino extraído al listener
             listener.onNavigationCommand(destination);
             commandFound = true;
         }

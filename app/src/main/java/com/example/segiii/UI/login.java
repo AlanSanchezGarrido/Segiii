@@ -285,6 +285,7 @@ public class login extends VoiceNavigationActivity {
         }
     }
 
+
     private void processVoiceInput(String spokenText) {
         switch (currentState) {
             case ASKING_ACCOUNT:

@@ -39,6 +39,7 @@ import com.example.segiii.R;
 import com.example.segiii.navigation.Geocode;
 import com.example.segiii.navigation.Navigation;
 import com.example.segiii.vozSegi.ComandoPrincipal.SpeedRecognizer;
+import com.example.segiii.vozSegi.ComandoPrincipal.TTSManager;
 import com.example.segiii.vozSegi.ComandoPrincipal.VoiceNavigationActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -53,9 +54,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textview.MaterialTextView;
 
-public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback, GoogleMap.OnPoiClickListener
-        , GoogleMap.OnMarkerClickListener
-{
+public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback,
+        GoogleMap.OnPoiClickListener, GoogleMap.OnMarkerClickListener,
+        SpeedRecognizer.OnVoiceCommandListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MapaUI";
@@ -185,7 +186,6 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         // Registra comandos específicos del mapa
         registerMapSpecificCommands();
     }
-
 
 
     /**
@@ -474,7 +474,7 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
 
     @Override
     public void onPoiClick(PointOfInterest pointOfInterest) {
-        guardarConMiniVentana(pointOfInterest.placeId,pointOfInterest.name,pointOfInterest.latLng);
+        guardarConMiniVentana(pointOfInterest.placeId, pointOfInterest.name, pointOfInterest.latLng);
         //markerUI.savePlace(pointOfInterest.placeId, pointOfInterest.name, pointOfInterest.latLng);
     }
 
@@ -502,9 +502,11 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
                 final Ubicacion datoObtenido = db.ubicacionDAO().getUbicacionByNombre(name);
                 mainHandler.post(() -> {
                     if (datoObtenido != null) {
+                        Log.d(TAG, "Dato obtenido: " + datoObtenido);
                         LatLng latLng = new LatLng(datoObtenido.getLatitud(), datoObtenido.getLongitud());
                         navigateByLatLng(latLng);
                     } else {
+                        Log.d(TAG, "No se encontró el dato");
                         navigateByName(name);
                     }
                 });
@@ -525,14 +527,14 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         }
     }
 
-    private void guardarConMiniVentana(String placeId,String placeName, LatLng ubi) {
+    private void guardarConMiniVentana(String placeId, String placeName, LatLng ubi) {
         if (miniWindow != null) {
             mostrarMiniVentana();
             MaterialButton btnCancel = miniWindow.findViewById(R.id.btn_cancel);
             MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
             EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
             TextView etWindowTitle = miniWindow.findViewById(R.id.mw_tv_title);
-            if(btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null){
+            if (btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null) {
                 etWindowTitle.setText("UBICACION");
                 etPlaceName.setText(placeName);
                 btnCancel.setOnClickListener(v -> {
@@ -558,7 +560,7 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
             MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
             EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
             TextView etWindowTitle = miniWindow.findViewById(R.id.mw_tv_title);
-            if(btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null){
+            if (btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null) {
                 etWindowTitle.setText("UBICACION");
                 etPlaceName.setText(null);
                 btnCancel.setOnClickListener(v -> {
@@ -586,7 +588,7 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
             MaterialButton btnOK = miniWindow.findViewById(R.id.btn_confirm);
             EditText etPlaceName = miniWindow.findViewById(R.id.edit_name);
             TextView etWindowTitle = miniWindow.findViewById(R.id.mw_tv_title);
-            if(btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null){
+            if (btnCancel != null && btnOK != null && etPlaceName != null && etWindowTitle != null) {
                 etWindowTitle.setText("¿ELIMINAR?");
                 etPlaceName.setText(placeName);
                 btnCancel.setOnClickListener(v -> {
@@ -610,5 +612,41 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         //markerUI.deleteMarker(marker.getTitle());
         eliminarConMiniVentana(marker.getTitle());
         return true;
+    }
+
+    @Override
+    public void onCommandProcessed(String command, String result) {
+
+    }
+
+    @Override
+    public void onError(String errorMessage) {
+
+    }
+
+    @Override
+    public void onRecognitionCancelled() {
+
+    }
+
+    @Override
+    public void onNavigationCommand(String destination) {
+        Log.d(TAG, "Comando de navegación recibido: " + destination);
+
+        if (isNavigating) {
+            Log.d(TAG, "Ya está navegando, ignorando comando");
+            return;
+        }
+
+        if (ttsManager != null && ttsManager.isInitialized()) {
+            ttsManager.speak("Navegando a " + destination, new TTSManager.TTSCallback() {
+                @Override
+                public void onSpeakComplete() {
+                    searchAndNavigate(destination); // <--- Aquí debe llegar solo el destino limpio
+                }
+            });
+        } else {
+            searchAndNavigate(destination);
+        }
     }
 }
