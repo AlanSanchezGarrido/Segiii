@@ -261,12 +261,6 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         }, 500); // Esperar 500ms inicialmente
     }
 
-    private void darBienvenidaConCallback() {
-        String mensajeBienvenida = "¡Hola! ¡Bienvenido a Segi, tu asistente de navegación! Estoy súper emocionado de ayudarte. ¿A dónde quieres ir hoy?";
-
-        // Verificar si TTS está listo y dar bienvenida
-        verificarTTSYhablar(mensajeBienvenida, 0);
-    }
 
     private void verificarTTSYhablar(String mensaje, int intentos) {
         if (intentos >= 5) {
