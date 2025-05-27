@@ -59,7 +59,7 @@ public class wordSegui {
             // Configura y construye el PorcupineManager
             porcupineManager = new PorcupineManager.Builder()
                     .setAccessKey(accessKey) // Establece la clave de acceso de Picovoice
-                    .setKeywordPath("okey-segui_es_android_v3_0_0.ppn") // Archivo de la palabra clave en español
+                    .setKeywordPath("Okey-segui_es_android_v3_0_0.ppn") // Archivo de la palabra clave en español
                     .setModelPath("porcupine_params_es.pv") // Modelo de lenguaje en español
                     .setSensitivity(0.7f) // Sensibilidad para la detección (0.0 a 1.0)
                     .build(context, new PorcupineManagerCallback() {

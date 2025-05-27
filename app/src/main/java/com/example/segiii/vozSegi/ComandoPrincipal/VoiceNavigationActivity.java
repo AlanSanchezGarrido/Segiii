@@ -2,6 +2,8 @@ package com.example.segiii.vozSegi.ComandoPrincipal;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,8 +15,7 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
     protected TTSManager ttsManager;
     protected static final String PICOVOICE_ACCESS_KEY = "";
     private static final String TAG = "VoiceNavigation";
-    private boolean isActivityActive = false;
-    // Bandera para controlar si el reconocimiento está activo o fue cancelado manualmente
+    protected boolean isActivityActive = false;
     private boolean isRecognitionEnabled = true;
 
     @Override
@@ -23,24 +24,28 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
         initializeVoiceComponents();
     }
 
-    protected void initializeVoiceComponents() {
-        // Inicializar el gestor de texto a voz
-        ttsManager = new TTSManager(this, null);
+    protected abstract void handleSaveLocationCommand();
+    protected abstract void handleDeleteLocationCommand(String locationName);
 
-        // Inicializar el reconocedor de voz con manejo centralizado de comandos
+    protected void initializeVoiceComponents() {
+        ttsManager = new TTSManager(this, null);
         speedRecognizer = new SpeedRecognizer(this, new SpeedRecognizer.OnVoiceCommandListener() {
             @Override
             public void onCommandProcessed(String command, String result) {
                 Log.d(TAG, "Comando procesado: " + command + ", resultado: " + result);
-                // Primero mostramos el resultado
                 Toast.makeText(VoiceNavigationActivity.this, result, Toast.LENGTH_SHORT).show();
 
-                // Luego llamamos al método abstracto para permitir comportamientos específicos
-                // en cada actividad que extienda esta clase
-                if (isActivityActive) {
+                // CORRECCIÓN: Permitir procesamiento para comandos críticos y modo de entrada de datos
+                boolean shouldProcess = isActivityActive ||
+                        speedRecognizer.isDataEntryMode() ||
+                        result.contains("pidiendo nombre") ||
+                        result.contains("eliminando ubicación") ||
+                        result.contains("guardando ubicación");
+
+                if (shouldProcess) {
                     handleVoiceCommand(command.toLowerCase(), result);
                 } else {
-                    Log.d(TAG, "Ignorando comando: actividad no está activa");
+                    Log.d(TAG, "Ignorando comando: actividad no está activa y no es comando crítico");
                 }
             }
 
@@ -53,45 +58,73 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
             @Override
             public void onRecognitionCancelled() {
                 Log.d(TAG, "Reconocimiento de voz cancelado manualmente");
-                // Marcar que el reconocimiento está inactivo
                 isRecognitionEnabled = false;
                 Toast.makeText(VoiceNavigationActivity.this, "Reconocimiento desactivado. Di 'Okey Segui' para activar", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onNavigationCommand(String destination) {
+                Log.d(TAG, "=== PROCESANDO COMANDO DE NAVEGACIÓN ===");
+                Log.d(TAG, "Destino recibido: '" + destination + "'");
+                Log.d(TAG, "isActivityActive: " + isActivityActive);
 
+                if (isActivityActive) {
+                    Log.d(TAG, "Actividad activa, procesando comando de navegación");
+                    handleNavigationCommand(destination);
+                } else {
+                    Log.w(TAG, "Actividad no activa, pero procesando comando de navegación crítico");
+                    handleNavigationCommand(destination);
+                }
+            }
+
+            @Override
+            public void onSaveLocationCommand() {
+                Log.d(TAG, "Comando de guardar ubicación recibido");
+                Log.d(TAG, "Estado de actividad: " + isActivityActive);
+
+                if (isActivityActive) {
+                    handleSaveLocationCommand();
+                } else {
+                    Log.w(TAG, "Actividad no activa, pero procesando comando crítico de guardar ubicación");
+                    handleSaveLocationCommand();
+                }
+            }
+
+            @Override
+            public void onDeleteLocationCommand(String locationName) {
+                Log.d(TAG, "Comando de eliminar ubicación recibido: " + locationName);
+                Log.d(TAG, "Estado de actividad: " + isActivityActive);
+
+                // CORRECCIÓN: Los comandos de eliminación son críticos, procesarlos siempre
+                if (isActivityActive) {
+                    handleDeleteLocationCommand(locationName);
+                } else {
+                    Log.w(TAG, "Actividad no completamente activa, pero procesando comando crítico de eliminación");
+                    // Usar un Handler para asegurar que se procese después del onResume
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        handleDeleteLocationCommand(locationName);
+                    }, 100);
+                }
             }
         });
 
-        // Inicializar el detector de la palabra clave "Okey Segui"
         initializeHotwordDetection();
     }
 
     protected void initializeHotwordDetection() {
         try {
-            // Si ya existe una instancia, limpiarla primero
             if (wordSegui != null) {
                 wordSegui.cleanup();
             }
-
             wordSegui = new wordSegui(this);
             wordSegui.initializeAndStartListening(PICOVOICE_ACCESS_KEY, () -> {
                 if (isActivityActive) {
                     Toast.makeText(this, "Hotword 'Okey Segui' detectado", Toast.LENGTH_SHORT).show();
-
-                    // Verificar si el reconocimiento está habilitado o fue desactivado manualmente
                     if (isRecognitionEnabled) {
-                        // Si ya está habilitado, activar el reconocimiento
-                        ttsManager.speak("Te escucho", () -> {
-                            speedRecognizer.startVoiceRecognition();
-                        });
+                        ttsManager.speak("Te escucho", () -> speedRecognizer.startVoiceRecognition());
                     } else {
-                        // Si estaba deshabilitado, volver a habilitarlo
                         isRecognitionEnabled = true;
-                        ttsManager.speak("Reconocimiento de voz activado. Te escucho", () -> {
-                            speedRecognizer.startVoiceRecognition();
-                        });
+                        ttsManager.speak("Reconocimiento de voz activado. Te escucho", () -> speedRecognizer.startVoiceRecognition());
                     }
                 } else {
                     Log.d(TAG, "Hotword detectado pero la actividad no está activa");
@@ -103,32 +136,20 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Método abstracto que debe ser implementado por las clases hijas para manejar
-     * los comandos de voz específicos de cada pantalla.
-     * @param command El comando reconocido en minúsculas
-     * @param result Resultado del procesamiento del comando
-     */
     protected abstract void handleVoiceCommand(String command, String result);
+    protected abstract void handleNavigationCommand(String destination);
 
     protected void handleNoCommand() {
         ttsManager.speak("Disculpe, no reconozco ese comando. Por favor, intente con un comando válido.", () -> {
-            // Solo iniciamos el reconocimiento si está habilitado
             if (isRecognitionEnabled) {
                 speedRecognizer.startVoiceRecognition();
             }
         });
     }
 
-    /**
-     * Método para activar manualmente el reconocimiento de voz
-     */
     protected void startVoiceListening() {
-        // Verificar si el reconocimiento está habilitado
         if (isRecognitionEnabled) {
-            ttsManager.speak("Te escucho", () -> {
-                speedRecognizer.startVoiceRecognition();
-            });
+            ttsManager.speak("Te escucho", () -> speedRecognizer.startVoiceRecognition());
         } else {
             ttsManager.speak("El reconocimiento de voz está desactivado. Di 'Okey Segui' para activarlo.", null);
         }
@@ -145,10 +166,8 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // Marcar la actividad como inactiva
+        Log.d(TAG, "onPause - Marcando actividad como inactiva");
         isActivityActive = false;
-
-        // Detener TTS si está hablando
         if (ttsManager != null) {
             ttsManager.stop();
         }
@@ -157,10 +176,8 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Marcar la actividad como activa
+        Log.d(TAG, "onResume - Marcando actividad como activa");
         isActivityActive = true;
-
-        // Asegurar que el detector de hotword esté funcionando
         if (wordSegui != null && !wordSegui.isListening()) {
             initializeHotwordDetection();
         }
@@ -169,19 +186,21 @@ public abstract class VoiceNavigationActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart - Marcando actividad como activa");
         isActivityActive = true;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop - Marcando actividad como inactiva");
         isActivityActive = false;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Liberar recursos
+        Log.d(TAG, "onDestroy - Limpiando recursos");
         if (wordSegui != null) {
             wordSegui.cleanup();
         }

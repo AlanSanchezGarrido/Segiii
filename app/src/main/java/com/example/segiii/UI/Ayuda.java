@@ -23,6 +23,16 @@ public class Ayuda extends VoiceNavigationActivity {
     private Handler handler;
 
     @Override
+    protected void handleSaveLocationCommand() {
+
+    }
+
+    @Override
+    protected void handleDeleteLocationCommand(String locationName) {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -146,6 +156,11 @@ public class Ayuda extends VoiceNavigationActivity {
                         }
                     });
         }
+    }
+
+    @Override
+    protected void handleNavigationCommand(String destination) {
+
     }
 
     /**

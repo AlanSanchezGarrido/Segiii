@@ -57,6 +57,16 @@ public class RegistrerUser extends VoiceNavigationActivity {
     private boolean isPasswordVisible = false; // Added for et_password toggle
     private boolean isConfirmPasswordVisible = false;
 
+    @Override
+    protected void handleSaveLocationCommand() {
+
+    }
+
+    @Override
+    protected void handleDeleteLocationCommand(String locationName) {
+
+    }
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -379,6 +389,16 @@ public class RegistrerUser extends VoiceNavigationActivity {
             @Override
             public void onNavigationCommand(String destination) {
             }
+
+            @Override
+            public void onSaveLocationCommand() {
+
+            }
+
+            @Override
+            public void onDeleteLocationCommand(String locationName) {
+
+            }
         });
 
         // Configuramos expresamente el modo de entrada de datos
@@ -638,6 +658,11 @@ public class RegistrerUser extends VoiceNavigationActivity {
         } else if (command.contains("salir")) {
             finishAffinity();
         }
+    }
+
+    @Override
+    protected void handleNavigationCommand(String destination) {
+
     }
 
     @Override

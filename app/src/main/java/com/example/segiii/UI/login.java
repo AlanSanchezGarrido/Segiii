@@ -55,6 +55,16 @@ public class login extends VoiceNavigationActivity {
     private boolean isListening = false;
 
     @Override
+    protected void handleSaveLocationCommand() {
+
+    }
+
+    @Override
+    protected void handleDeleteLocationCommand(String locationName) {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -162,6 +172,11 @@ public class login extends VoiceNavigationActivity {
         }
     }
 
+    @Override
+    protected void handleNavigationCommand(String destination) {
+
+    }
+
     private void navigateToMap() {
         Intent intent = new Intent(login.this, MapaUI.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -172,7 +187,7 @@ public class login extends VoiceNavigationActivity {
     private void initTextToSpeech() {
         textToSpeech = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                int result = textToSpeech.setLanguage(new Locale("es", "MX"));
+                int result = textToSpeech.setLanguage(new Locale("es", "ES"));
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e(TAG, "El idioma no está soportado");
                 } else {
@@ -215,7 +230,7 @@ public class login extends VoiceNavigationActivity {
                             });
                         }
                     });
-                    speak("¿Tienes cuenta?", "ask_account");
+                    speak("Para iniciar secion podrias decirme si ¿Tienes cuenta?", "ask_account");
                 }
             } else {
                 Log.e(TAG, "Error al inicializar TextToSpeech");
@@ -246,7 +261,7 @@ public class login extends VoiceNavigationActivity {
 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, new Locale("es", "MX"));
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, new Locale("es", "ES"));
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Di un comando...");
         intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000);
         intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 3000);
@@ -313,7 +328,7 @@ public class login extends VoiceNavigationActivity {
             speak("Por favor, dime tu correo electrónico", "ask_email");
         } else if (response.contains("no") || response.contains("no tengo") ||
                 response.contains("no tengo cuenta") || response.contains("negativo")) {
-            speak("Entendido, te enviaré a la pantalla de registro", "redirect_register");
+            speak("Entendido, te enviaré a la pantalla de registro "  , "redirect_register");
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(login.this, RegistrerUser.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
