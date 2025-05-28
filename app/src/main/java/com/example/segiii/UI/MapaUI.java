@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -51,6 +52,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallback,
         GoogleMap.OnPoiClickListener, GoogleMap.OnMarkerClickListener,
         SpeedRecognizer.OnVoiceCommandListener {
+
+
+    private EditText editDestination, editName;
+    private MaterialButton btnCancel, btnConfirm;
+
+
+
+
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MapaUI";
@@ -152,7 +161,17 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
             }
             return false;
         });
-
+        etDestination = findViewById(R.id.edit_destination);
+        editDestination = findViewById(R.id.edit_destination); // Para accesibilidad
+        editName = findViewById(R.id.edit_name); // Para accesibilidad
+        btnCancel = findViewById(R.id.btn_cancel); // Para accesibilidad
+        btnConfirm = findViewById(R.id.btn_confirm); // Para accesibilidad
+        fabCenterLocation = findViewById(R.id.fab_center_location);
+        fabAyuda = findViewById(R.id.fab_ayuda);
+        fab_user = findViewById(R.id.fab_user);
+        fabSave = findViewById(R.id.fab_save);
+        miniWindow = findViewById(R.id.mini_window);
+        splashOverlay = findViewById(R.id.splash_overlay);
         splashOverlay = findViewById(R.id.splash_overlay);
         fabCenterLocation = findViewById(R.id.fab_center_location);
         fab_user = findViewById(R.id.fab_user);
@@ -166,6 +185,8 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         if (fabAyuda == null) Log.e(TAG, "fabAyuda is null - check layout XML");
         if (fabSave == null) Log.e(TAG, "fabSave is null - check layout XML");
         if (miniWindow == null) Log.e(TAG, "miniWindow is null - check layout XML");
+
+        applyAccessibilitySettings();
 
         handler = new Handler(Looper.getMainLooper());
         splashRunnable = () -> {
@@ -225,7 +246,139 @@ public class MapaUI extends VoiceNavigationActivity implements OnMapReadyCallbac
         }
 
         registerMapSpecificCommands();
+
+
     }
+
+    private void applyAccessibilitySettings() {
+        SharedPreferences prefs = getSharedPreferences("AccessibilityPrefs", Context.MODE_PRIVATE);
+        boolean highContrast = prefs.getBoolean("high_contrast", false);
+        String colorblindFilter = prefs.getString("colorblind_filter", null);
+        boolean increaseTextSize = prefs.getBoolean("increase_text_size", false);
+
+        // Verificar que las vistas no sean null
+        if (editDestination == null || editName == null || btnCancel == null || btnConfirm == null ||
+                fabCenterLocation == null || fabAyuda == null || fab_user == null || fabSave == null || miniWindow == null) {
+            Log.e(TAG, "Una o más vistas no están inicializadas. Revisa los IDs en el XML.");
+            return;
+        }
+
+        // Colores para accesibilidad
+        if (highContrast) {
+            editDestination.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            editDestination.setTextColor(Color.WHITE);
+            editDestination.setHintTextColor(Color.LTGRAY);
+
+            editName.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            editName.setTextColor(Color.WHITE);
+            editName.setHintTextColor(Color.LTGRAY);
+
+            btnCancel.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D32F2F"))); // Rojo oscuro
+            btnCancel.setTextColor(Color.WHITE);
+            btnConfirm.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#388E3C"))); // Verde oscuro
+            btnConfirm.setTextColor(Color.WHITE);
+
+            fabCenterLocation.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            fabCenterLocation.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabAyuda.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            fabAyuda.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fab_user.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            fab_user.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabSave.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            fabSave.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+
+            miniWindow.setBackgroundColor(Color.BLACK);
+        } else if ("red_green".equals(colorblindFilter)) {
+            editDestination.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C2526")));
+            editDestination.setTextColor(Color.WHITE);
+            editDestination.setHintTextColor(Color.LTGRAY);
+
+            editName.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C2526")));
+            editName.setTextColor(Color.WHITE);
+            editName.setHintTextColor(Color.LTGRAY);
+
+            btnCancel.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555"))); // Gris oscuro
+            btnCancel.setTextColor(Color.WHITE);
+            btnConfirm.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0288D1"))); // Azul distinguible
+            btnConfirm.setTextColor(Color.WHITE);
+
+            fabCenterLocation.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0288D1")));
+            fabCenterLocation.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabAyuda.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0288D1")));
+            fabAyuda.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fab_user.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0288D1")));
+            fab_user.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabSave.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0288D1")));
+            fabSave.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+
+            miniWindow.setBackgroundColor(Color.parseColor("#1C2526"));
+        } else if ("blue_yellow".equals(colorblindFilter)) {
+            editDestination.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B0BEC5")));
+            editDestination.setTextColor(Color.BLACK);
+            editDestination.setHintTextColor(Color.DKGRAY);
+
+            editName.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B0BEC5")));
+            editName.setTextColor(Color.BLACK);
+            editName.setHintTextColor(Color.DKGRAY);
+
+            btnCancel.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+            btnCancel.setTextColor(Color.WHITE);
+            btnConfirm.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#388E3C")));
+            btnConfirm.setTextColor(Color.WHITE);
+
+            fabCenterLocation.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+            fabCenterLocation.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabAyuda.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+            fabAyuda.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fab_user.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+            fab_user.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabSave.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+            fabSave.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+
+            miniWindow.setBackgroundColor(Color.parseColor("#B0BEC5"));
+        } else {
+            editDestination.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1976D2")));
+            editDestination.setTextColor(Color.BLACK);
+            editDestination.setHintTextColor(Color.WHITE);
+
+            editName.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+            editName.setTextColor(Color.BLACK);
+            editName.setHintTextColor(Color.GRAY);
+
+            btnCancel.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
+            btnCancel.setTextColor(Color.WHITE);
+            btnConfirm.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+            btnConfirm.setTextColor(Color.WHITE);
+
+            fabCenterLocation.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1976D2")));
+            fabCenterLocation.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabAyuda.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1976D2")));
+            fabAyuda.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fab_user.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1976D2")));
+            fab_user.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            fabSave.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1976D2")));
+            fabSave.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+
+            miniWindow.setBackgroundColor(Color.WHITE);
+        }
+
+        if (increaseTextSize) {
+            editDestination.setTextSize(24);
+            editName.setTextSize(18);
+            btnCancel.setTextSize(18);
+            btnConfirm.setTextSize(18);
+        } else {
+            editDestination.setTextSize(20);
+            editName.setTextSize(14);
+            btnCancel.setTextSize(14);
+            btnConfirm.setTextSize(14);
+        }
+    }
+
+
+
+
+
     private void darBienvenidaEntusiasta() {
         // Array de mensajes de bienvenida entusiastas
         String[] mensajesBienvenida = {

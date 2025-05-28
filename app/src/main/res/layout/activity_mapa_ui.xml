@@ -29,7 +29,7 @@
         android:layout_marginStart="8dp"
         android:background="@drawable/rounded_edittext"
         android:drawableStart="@drawable/localizacion"
-        android:drawableEnd="@drawable/isi"
+        android:drawableEnd="@drawable/icononuevo"
         android:drawablePadding="8dp"
         android:hint="@string/txt_buscar_lugar"
         android:paddingStart="8dp"

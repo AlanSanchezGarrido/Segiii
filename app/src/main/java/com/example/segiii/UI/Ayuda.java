@@ -217,7 +217,7 @@ public class Ayuda extends VoiceNavigationActivity {
     private void playVideo() {
         try {
             if (!isVideoPlaying) {
-                Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.videosegi);
+                Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.tuto);
                 videoView.setVideoURI(videoUri);
                 videoView.setOnPreparedListener(mp -> {
                     mp.setLooping(false);
@@ -297,7 +297,7 @@ public class Ayuda extends VoiceNavigationActivity {
      */
     private void restartVideo() {
         try {
-            Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.videosegi);
+            Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.tuto);
             videoView.setVideoURI(videoUri);
             videoView.setOnPreparedListener(mp -> {
                 mp.setLooping(false);

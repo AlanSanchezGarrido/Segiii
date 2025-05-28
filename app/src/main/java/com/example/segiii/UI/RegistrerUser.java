@@ -1,5 +1,10 @@
 package com.example.segiii.UI;
 
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.LTGRAY;
+import static android.graphics.Color.RED;
+import static android.graphics.Color.WHITE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -18,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +48,7 @@ public class RegistrerUser extends VoiceNavigationActivity {
 
     private static final String TAG = "RegistrerUser";
     private EditText etNombre, etApellidos, etEmail, etPassword, etConfirmPassword;
+    private LinearLayout panel;
     private SegiDataBase segiDataBase;
     private ConstraintLayout mainLayout;
     private TextView title, nombreLabel, apellidosLabel, emailLabel, contrasenaLabel, confirmarContrasenaLabel;
@@ -91,7 +98,8 @@ public class RegistrerUser extends VoiceNavigationActivity {
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
         btnToggleConfirmPassword = findViewById(R.id.btnToggleConfirmPassword);
         fabAccessibility = findViewById(R.id.fab_accessibility);
-        imgBack = findViewById(R.id.img_back);// Toggle password visibility for et_password
+        imgBack = findViewById(R.id.img_back);
+        panel = findViewById(R.id.panel);// Toggle password visibility for et_password
         btnTogglePassword.setOnClickListener(v -> {
             isPasswordVisible = !isPasswordVisible;
             if (isPasswordVisible) {
@@ -181,55 +189,94 @@ public class RegistrerUser extends VoiceNavigationActivity {
         boolean increaseTextSize = prefs.getBoolean("increase_text_size", false);
 
         if (highContrast) {
-            mainLayout.setBackgroundColor(Color.BLACK);
-            title.setTextColor(Color.WHITE);
-            nombreLabel.setTextColor(Color.WHITE);
-            apellidosLabel.setTextColor(Color.WHITE);
-            emailLabel.setTextColor(Color.WHITE);
-            contrasenaLabel.setTextColor(Color.WHITE);
-            confirmarContrasenaLabel.setTextColor(Color.WHITE);
-            btnGuardar.setTextColor(Color.WHITE);
+            mainLayout.setBackgroundColor(BLACK);
+            title.setTextColor(WHITE);
+            nombreLabel.setTextColor(WHITE);
+            apellidosLabel.setTextColor(WHITE);
+            emailLabel.setTextColor(WHITE);
+            contrasenaLabel.setTextColor(WHITE);
+            confirmarContrasenaLabel.setTextColor(WHITE);
+            btnGuardar.setTextColor(WHITE);
             btnGuardar.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.DKGRAY));
-            etNombre.setTextColor(Color.WHITE);
-            etApellidos.setTextColor(Color.WHITE);
-            etEmail.setTextColor(Color.WHITE);
-            etPassword.setTextColor(Color.WHITE);
-            etConfirmPassword.setTextColor(Color.WHITE);
-            etNombre.setHintTextColor(Color.LTGRAY);
-            etApellidos.setHintTextColor(Color.LTGRAY);
-            etEmail.setHintTextColor(Color.LTGRAY);
-            etPassword.setHintTextColor(Color.LTGRAY);
-            etConfirmPassword.setHintTextColor(Color.LTGRAY);
-            btnTogglePassword.setColorFilter(Color.WHITE);
-            btnToggleConfirmPassword.setColorFilter(Color.WHITE);
+            etNombre.setHintTextColor(WHITE);
+            etApellidos.setHintTextColor(Color.WHITE);
+            etEmail.setHintTextColor(Color.WHITE);
+            etPassword.setHintTextColor(Color.WHITE);
+            etConfirmPassword.setHintTextColor(Color.WHITE);
+            btnTogglePassword.setColorFilter(WHITE);
+            btnToggleConfirmPassword.setColorFilter(BLACK);
+            panel.setBackgroundColor(Color.parseColor("#1C2526"));
         } else {
             mainLayout.setBackgroundColor(Color.parseColor("#1976D2"));
-            title.setTextColor(Color.BLACK);
-            nombreLabel.setTextColor(Color.BLACK);
-            apellidosLabel.setTextColor(Color.BLACK);
-            emailLabel.setTextColor(Color.BLACK);
-            contrasenaLabel.setTextColor(Color.BLACK);
-            confirmarContrasenaLabel.setTextColor(Color.BLACK);
-            btnGuardar.setTextColor(Color.WHITE);
+            title.setTextColor(WHITE);
+            nombreLabel.setTextColor(WHITE);
+            apellidosLabel.setTextColor(WHITE);
+            emailLabel.setTextColor(WHITE);
+            contrasenaLabel.setTextColor(WHITE);
+            confirmarContrasenaLabel.setTextColor(WHITE);
+            btnGuardar.setTextColor(WHITE);
             btnGuardar.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#212121")));
-            etNombre.setTextColor(Color.BLACK);
-            etApellidos.setTextColor(Color.BLACK);
-            etEmail.setTextColor(Color.BLACK);
-            etPassword.setTextColor(Color.BLACK);
-            etConfirmPassword.setTextColor(Color.BLACK);
-            etNombre.setHintTextColor(Color.GRAY);
-            etApellidos.setHintTextColor(Color.GRAY);
-            etEmail.setHintTextColor(Color.GRAY);
-            etPassword.setHintTextColor(Color.GRAY);
-            etConfirmPassword.setHintTextColor(Color.GRAY);
-            btnTogglePassword.setColorFilter(Color.BLACK);
-            btnToggleConfirmPassword.setColorFilter(Color.BLACK);
+            etNombre.setTextColor(BLACK);
+            etApellidos.setTextColor(BLACK);
+            etEmail.setTextColor(BLACK);
+            etPassword.setTextColor(BLACK);
+            etConfirmPassword.setTextColor(BLACK);
+            etNombre.setHintTextColor(Color.WHITE);
+            etApellidos.setHintTextColor(Color.WHITE);
+            etEmail.setHintTextColor(Color.WHITE);
+            etPassword.setHintTextColor(Color.WHITE);
+            etConfirmPassword.setHintTextColor(Color.WHITE);
+            btnTogglePassword.setColorFilter(BLACK);
+            btnToggleConfirmPassword.setColorFilter(BLACK);
         }
 
         if ("red_green".equals(colorblindFilter)) {
-            mainLayout.setBackgroundColor(Color.parseColor("#AAAAAA"));
+            mainLayout.setBackgroundColor(Color.parseColor("#1C1C1C"));
+            title.setTextColor(BLACK);
+            nombreLabel.setTextColor(BLACK);
+            apellidosLabel.setTextColor(BLACK);
+            emailLabel.setTextColor(BLACK);
+            contrasenaLabel.setTextColor(BLACK);
+            confirmarContrasenaLabel.setTextColor(BLACK);
+            btnGuardar.setTextColor(WHITE);
+            btnGuardar.setBackgroundColor(BLACK);
+            etNombre.setTextColor(BLACK);
+            etNombre.setHintTextColor(BLACK);
+            etApellidos.setHintTextColor(BLACK);
+            etEmail.setHintTextColor(BLACK);
+            etPassword.setHintTextColor(BLACK);
+            etConfirmPassword.setHintTextColor(BLACK);
+            etApellidos.setTextColor(BLACK);
+            etEmail.setTextColor(BLACK);
+            etPassword.setTextColor(BLACK);
+            etConfirmPassword.setTextColor(BLACK);
+            btnTogglePassword.setColorFilter(BLACK);
+            btnToggleConfirmPassword.setColorFilter(BLACK);
+            panel.setBackgroundColor(WHITE);
+            fabAccessibility.setBackgroundColor(Color.parseColor("#E67E22"));
         } else if ("blue_yellow".equals(colorblindFilter)) {
-            mainLayout.setBackgroundColor(Color.parseColor("#CCCCFF"));
+            mainLayout.setBackgroundColor(Color.parseColor("#002B5D"));
+            title.setTextColor(BLACK);
+            nombreLabel.setTextColor(BLACK);
+            apellidosLabel.setTextColor(BLACK);
+            emailLabel.setTextColor(BLACK);
+            contrasenaLabel.setTextColor(BLACK);
+            confirmarContrasenaLabel.setTextColor(BLACK);
+            btnGuardar.setTextColor(WHITE);
+            btnGuardar.setBackgroundColor(BLACK);
+            etNombre.setTextColor(BLACK);
+            etNombre.setHintTextColor(BLACK);
+            etApellidos.setHintTextColor(BLACK);
+            etEmail.setHintTextColor(BLACK);
+            etPassword.setHintTextColor(BLACK);
+            etConfirmPassword.setHintTextColor(BLACK);
+            etApellidos.setTextColor(BLACK);
+            etEmail.setTextColor(BLACK);
+            etPassword.setTextColor(BLACK);
+            etConfirmPassword.setTextColor(BLACK);
+            btnTogglePassword.setColorFilter(BLACK);
+            btnToggleConfirmPassword.setColorFilter(BLACK);
+            panel.setBackgroundColor(WHITE);
         }
 
         if (increaseTextSize) {
@@ -244,7 +291,7 @@ public class RegistrerUser extends VoiceNavigationActivity {
             etEmail.setTextSize(18);
             etPassword.setTextSize(18);
             etConfirmPassword.setTextSize(18);
-            btnGuardar.setTextSize(40);
+            btnGuardar.setTextSize(35);
         } else {
             title.setTextSize(24);
             nombreLabel.setTextSize(14);

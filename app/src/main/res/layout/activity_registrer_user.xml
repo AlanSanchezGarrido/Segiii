@@ -71,8 +71,9 @@
         app:layout_constraintTop_toTopOf="@id/guideline_card">
 
         <LinearLayout
+            android:id="@+id/panel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="526dp"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -80,12 +81,12 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:text="Perfil"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="12dp" />
+                android:textStyle="bold" />
 
             <!-- Nombre -->
             <TextView
@@ -275,13 +276,14 @@
             <Button
                 android:id="@+id/img_save"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="12dp"
                 android:backgroundTint="@color/boton"
                 android:text="Guardar"
                 android:textColor="@android:color/white"
                 android:textSize="35sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RectangularButton"
                 android:textStyle="bold" />
 
         </LinearLayout>
